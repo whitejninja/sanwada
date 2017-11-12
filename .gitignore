@@ -1,0 +1,21 @@
+# Java classpath
+.classpath
+
+# Eclipse
+.project
+.settings/
+
+# Gradle
+.gradle/
+bin/*
+build/*
+gradle/*
+gradlew
+gradlew.bat
+settings.gradle
+
+#JEE
+WebContent/META-INF/*
+WebContent/WEB-INF/lib/*
+/build/
+/bin/
