@@ -5,15 +5,15 @@ import java.util.LinkedHashMap;
 import org.bson.Document;
 
 import sanwada.v1.entity.DbResponse;
-import sanwada.v1.entity.Post;
+import sanwada.v1.entity.Question;
 
-public class PostDataService implements PostDAO {
+public class QuestionDataService implements QuestionDAO {
 
     private DataSourceClient<Document> client;
     private DbResponse dbResponse;
     private LinkedHashMap<String, Object> filters;
 
-    public PostDataService() {
+    public QuestionDataService() {
         try {
             this.client = new MongoDataSourceClient();
             filters = new LinkedHashMap<String, Object>();
@@ -23,22 +23,22 @@ public class PostDataService implements PostDAO {
     }
 
     @Override
-    public DbResponse addPost(Post post) {
+    public DbResponse addQuestion(Question question) {
         return null;
     }
 
     @Override
-    public DbResponse getPost(String id) {
+    public DbResponse getQuestion(String id) {
         return null;
     }
 
     @Override
-    public DbResponse removePost(String id) {
+    public DbResponse removeQuestion(String id) {
         return null;
     }
 
     @Override
-    public DbResponse updatePost(String id, Post newPost) {
+    public DbResponse updateQuestion(String id, Question newQuestion) {
         return null;
     }
 	

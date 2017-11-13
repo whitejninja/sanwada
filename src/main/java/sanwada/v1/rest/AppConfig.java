@@ -15,7 +15,7 @@ public class AppConfig extends Application {
 
         final Set<Class<?>> classes = new HashSet<>();
         // register root resource classes
-        classes.add(PostResource.class);
+        classes.add(QuestionResource.class);
         return classes;
 
     }

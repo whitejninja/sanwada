@@ -24,8 +24,8 @@ public class DbResponse {
         return responseObj;
     }
 
-    public void setNewUser(Post post) {
-        this.responseObj = post;
+    public void setNewUser(Question question) {
+        this.responseObj = question;
     }
 
 }
