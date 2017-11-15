@@ -4,7 +4,10 @@ import java.util.LinkedHashMap;
 
 import org.bson.Document;
 
+import com.mongodb.util.JSON;
+
 import sanwada.v1.entity.DbResponse;
+import sanwada.v1.entity.NewQuestion;
 import sanwada.v1.entity.Question;
 
 public class QuestionDataService implements QuestionDAO {
@@ -23,7 +26,7 @@ public class QuestionDataService implements QuestionDAO {
     }
 
     @Override
-    public DbResponse addQuestion(Question question) {
+    public DbResponse addQuestion(NewQuestion question) {
         return null;
     }
 

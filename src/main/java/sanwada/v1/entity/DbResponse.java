@@ -20,11 +20,11 @@ public class DbResponse {
         this.status = status;
     }
 
-    public Object getPost() {
+    public Object getQuestion() {
         return responseObj;
     }
 
-    public void setNewUser(Question question) {
+    public void setNewQuestion(Question question) {
         this.responseObj = question;
     }
 

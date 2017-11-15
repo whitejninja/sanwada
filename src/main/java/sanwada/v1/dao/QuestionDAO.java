@@ -1,6 +1,7 @@
 package sanwada.v1.dao;
 
 import sanwada.v1.entity.DbResponse;
+import sanwada.v1.entity.NewQuestion;
 import sanwada.v1.entity.Question;
 
 public interface QuestionDAO {
@@ -8,7 +9,7 @@ public interface QuestionDAO {
     /**
      * Add a question to a database
      */
-    DbResponse addQuestion(Question question);
+    DbResponse addQuestion(NewQuestion question);
 
     /**
      * Get a question details based on id
