@@ -3,7 +3,9 @@ package sanwada.v1.rest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -34,8 +36,34 @@ public class QuestionResource {
 			return Response.status(409).header("location", "question/create").build();
 
 		} else {
-			
+
 			return Response.status(500).header("location", "question/create").build();
+
+		}
+	}
+
+	@PUT
+	@Path(value = "update/{id}")
+	@Consumes(value = MediaType.APPLICATION_JSON)
+	public Response updateQuestion(@PathParam("id") String id, Question question) {
+		QuestionDataService questionDataService = new QuestionDataService();
+		DbResponse dbResponse = questionDataService.updateQuestion(id, question);
+		if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
+
+			return Response.status(201).header("location", "question/update/" + id).entity(dbResponse.getQuestion())
+					.build();
+
+		} else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
+
+			return Response.status(400).header("location", "question/update/" + id).build();
+
+		} else if (dbResponse.getStatus().equals(DbOperationStatus.DUPLICATE_ENTRY)) {
+
+			return Response.status(409).header("location", "question/update/" + id).build();
+
+		} else {
+
+			return Response.status(500).header("location", "question/update/" + id).build();
 
 		}
 	}

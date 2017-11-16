@@ -9,41 +9,45 @@ import sanwada.v1.entity.Question;
 
 public class QuestionDataService implements QuestionDAO {
 
-    private DataSourceClient<Document> client;
-    private DbResponse dbResponse;
-    private LinkedHashMap<String, Object> filters;
+	private DataSourceClient<Document> client;
+	private DbResponse dbResponse;
+	private LinkedHashMap<String, Object> filters;
 
-    public QuestionDataService() {
-        try {
-            this.client = new MongoDataSourceClient();
-            filters = new LinkedHashMap<String, Object>();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	public QuestionDataService() {
+		try {
+			this.client = new MongoDataSourceClient();
+			filters = new LinkedHashMap<String, Object>();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-    @Override
-    public DbResponse addQuestion(Question question) {
-    	System.out.println("id: "+question.getId());
-    	System.out.println("alias: "+question.getUserAlias());
-    	System.out.println("title: "+question.getTitle());
-    	System.out.println("content: "+question.getContent());
-        return null;
-    }
+	@Override
+	public DbResponse addQuestion(Question question) {
+		System.out.println("id: " + question.getId());
+		System.out.println("alias: " + question.getUserAlias());
+		System.out.println("title: " + question.getTitle());
+		System.out.println("content: " + question.getContent());
+		return null;
+	}
 
-    @Override
-    public DbResponse getQuestion(String id) {
-        return null;
-    }
+	@Override
+	public DbResponse getQuestion(String id) {
+		return null;
+	}
 
-    @Override
-    public DbResponse removeQuestion(String id) {
-        return null;
-    }
+	@Override
+	public DbResponse removeQuestion(String id) {
+		return null;
+	}
 
-    @Override
-    public DbResponse updateQuestion(String id, Question newQuestion) {
-        return null;
-    }
-	
+	@Override
+	public DbResponse updateQuestion(String id, Question question) {
+		System.out.println("id to be update: " + id);
+		System.out.println("alias: " + question.getUserAlias());
+		System.out.println("title: " + question.getTitle());
+		System.out.println("content: " + question.getContent());
+		return null;
+	}
+
 }
