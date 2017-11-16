@@ -9,7 +9,6 @@ import javax.ws.rs.core.Response;
 
 import sanwada.v1.dao.DbOperationStatus;
 import sanwada.v1.entity.DbResponse;
-import sanwada.v1.entity.NewQuestion;
 import sanwada.v1.dao.QuestionDataService;
 import sanwada.v1.entity.Question;
 
@@ -19,7 +18,7 @@ public class QuestionResource {
 	@POST
 	@Path(value = "create")
 	@Consumes(value = MediaType.APPLICATION_JSON)
-	public Response createQuestion(NewQuestion question) {
+	public Response createQuestion(Question question) {
 		QuestionDataService questionDataService = new QuestionDataService();
 		DbResponse dbResponse = questionDataService.addQuestion(question);
 		if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
