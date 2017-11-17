@@ -49,12 +49,12 @@ public class MongoDataSourceClient implements DataSourceClient<Document>{
 
     public MongoCollection<Document> getCollection() {
 
-        return MongoDataSourceClient.getClient().getDatabase("myNewDatabase").getCollection("myCollection");
+        return MongoDataSourceClient.getClient().getDatabase("DiscussDatabase").getCollection("sanwadaCollection");
     }
 
     @Override
     public Object getDatabase() {
-        return MongoDataSourceClient.getClient().getDatabase("myNewDatabase");
+        return MongoDataSourceClient.getClient().getDatabase("DiscussDatabase");
     }
 
 

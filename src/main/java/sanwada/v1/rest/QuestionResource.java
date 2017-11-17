@@ -6,6 +6,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -20,9 +21,11 @@ public class QuestionResource {
 	@POST
 	@Path(value = "create")
 	@Consumes(value = MediaType.APPLICATION_JSON)
+	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response createQuestion(Question question) {
 		QuestionDataService questionDataService = new QuestionDataService();
 		DbResponse dbResponse = questionDataService.addQuestion(question);
+
 		if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
 
 			return Response.status(201).header("location", "question/create").entity(dbResponse.getQuestion()).build();
@@ -45,9 +48,11 @@ public class QuestionResource {
 	@PUT
 	@Path(value = "update/{id}")
 	@Consumes(value = MediaType.APPLICATION_JSON)
+	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response updateQuestion(@PathParam("id") String id, Question question) {
 		QuestionDataService questionDataService = new QuestionDataService();
 		DbResponse dbResponse = questionDataService.updateQuestion(id, question);
+
 		if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
 
 			return Response.status(201).header("location", "question/update/" + id).entity(dbResponse.getQuestion())

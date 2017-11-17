@@ -5,17 +5,18 @@ import org.jvnet.hk2.annotations.Optional;
 public class Question {
 
 	@Optional
-	private long id;
+	private String id;
 	@Optional
 	private String userAlias;
 	private String title;
 	private String content;
+	private long timeStamp;
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -42,5 +43,15 @@ public class Question {
 	public void setContent(String content) {
 		this.content = content;
 	}
+
+	public long getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(long timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+	
+	
 
 }
