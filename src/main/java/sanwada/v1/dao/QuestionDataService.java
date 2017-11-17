@@ -1,8 +1,10 @@
 package sanwada.v1.dao;
 
 import static com.mongodb.client.model.Filters.eq;
-import java.util.LinkedHashMap;
 import org.bson.Document;
+import org.bson.types.ObjectId;
+
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 
 import sanwada.v1.entity.DbResponse;
@@ -17,7 +19,7 @@ public class QuestionDataService implements QuestionDAO {
 		try {
 			// This should be removed because of high coupling
 			DataSourceClient<Document> client = new MongoDataSourceClient();
-			this.collection= (MongoCollection<Document>) client.getCollection();
+			this.collection = (MongoCollection<Document>) client.getCollection();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -45,13 +47,13 @@ public class QuestionDataService implements QuestionDAO {
 				String idStr = (String) idObj.toString();
 
 				// Generate response object
-				Question createdQuestion=new Question();
+				Question createdQuestion = new Question();
 				createdQuestion.setId(idStr);
 				createdQuestion.setUserAlias(document.getString("alias"));
 				createdQuestion.setTitle(document.getString("title"));
 				createdQuestion.setContent(document.getString("content"));
 				createdQuestion.setTimeStamp(document.getLong("time"));
-				
+
 				// Build response upon success
 				this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, createdQuestion);
 				return this.dbResponse;
@@ -81,11 +83,36 @@ public class QuestionDataService implements QuestionDAO {
 
 	@Override
 	public DbResponse updateQuestion(String id, Question question) {
-		System.out.println("id to be update: " + id);
-		System.out.println("alias: " + question.getUserAlias());
-		System.out.println("title: " + question.getTitle());
-		System.out.println("content: " + question.getContent());
-		return null;
+
+		ObjectId objectId= new ObjectId(id);
+		try {
+
+			BasicDBObject newDocument = new BasicDBObject();
+			newDocument.append("$set",
+					new BasicDBObject().append("title", question.getTitle()).append("content", question.getContent()));
+
+			BasicDBObject searchQuery = new BasicDBObject().append("_id", objectId);
+
+			collection.updateOne(searchQuery, newDocument);
+
+			Document updatedDocument= collection.find(eq("_id",objectId)).first();
+			Question updatedQuestion = question;
+			updatedQuestion.setId(id);
+			updatedQuestion.setUserAlias(updatedDocument.getString("alias"));
+			updatedQuestion.setTitle(updatedDocument.getString("title"));
+			updatedQuestion.setContent(updatedDocument.getString("content"));
+			updatedQuestion.setTimeStamp(updatedDocument.getLong("time"));
+
+			this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, updatedQuestion);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			this.dbResponse = new DbResponse(DbOperationStatus.FALIURE, null);
+			return dbResponse;
+		}
+
+		return dbResponse;
 	}
 
 }
