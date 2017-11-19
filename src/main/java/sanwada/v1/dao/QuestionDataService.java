@@ -1,11 +1,13 @@
 package sanwada.v1.dao;
 
 import static com.mongodb.client.model.Filters.eq;
+
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.result.DeleteResult;
 
 import sanwada.v1.entity.DbResponse;
 import sanwada.v1.entity.Question;
@@ -96,11 +98,6 @@ public class QuestionDataService implements QuestionDAO {
 	}
 
 	@Override
-	public DbResponse removeQuestion(String id) {
-		return null;
-	}
-
-	@Override
 	public DbResponse updateQuestion(String id, Question question) {
 
 		ObjectId objectId = new ObjectId(id);
@@ -134,4 +131,37 @@ public class QuestionDataService implements QuestionDAO {
 		return dbResponse;
 	}
 
+	@Override
+	public DbResponse removeQuestion(String id) {
+		try {
+			ObjectId objId = new ObjectId(id);
+			Document document = new Document("_id", objId);
+
+			DeleteResult res = this.collection.deleteOne(document);
+
+			if (res.getDeletedCount() == 0) {
+
+				this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, null);
+
+			} else {
+
+				this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, id);
+
+			}
+
+		} catch (IllegalArgumentException ex) {
+
+			// Invalid request error
+			this.dbResponse = new DbResponse(DbOperationStatus.FALIURE, null);
+
+		} catch (Exception ex) {
+
+			// Invalid request error
+			ex.printStackTrace();
+			this.dbResponse = new DbResponse(DbOperationStatus.FALIURE, null);
+
+		}
+
+		return this.dbResponse;
+	}
 }

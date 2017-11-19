@@ -1,6 +1,7 @@
 package sanwada.v1.rest;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -84,6 +85,27 @@ public class QuestionResource {
 		if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
 
 			return Response.ok(dbResponse.getQuestion()).header("location", "question/" + id).build();
+
+		} else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
+
+			return Response.status(400).header("location", "question/" + id).build();
+
+		} else {
+
+			return Response.status(500).header("location", "question/" + id).build();
+
+		}
+	}
+	
+	@DELETE
+	@Path(value = "/{id}")
+	public Response deleteQuestion(@PathParam("id") String id) {
+		QuestionDataService questionDataService = new QuestionDataService();
+		DbResponse dbResponse = questionDataService.removeQuestion(id);
+		
+		if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
+
+			return Response.ok(dbResponse.getQuestion()).header("location", "account/deleted").entity(dbResponse.getQuestion()).build();
 
 		} else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
 
