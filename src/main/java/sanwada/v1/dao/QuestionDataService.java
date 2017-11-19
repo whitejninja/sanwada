@@ -73,7 +73,26 @@ public class QuestionDataService implements QuestionDAO {
 
 	@Override
 	public DbResponse getQuestion(String id) {
-		return null;
+
+		try {
+			ObjectId objId = new ObjectId(id);
+			Document doc = collection.find(eq("_id", objId)).first();
+
+			Question returnedQuestion = new Question();
+			returnedQuestion.setId(id);
+			returnedQuestion.setTitle(doc.getString("title"));
+			returnedQuestion.setContent(doc.getString("content"));
+			returnedQuestion.setUserAlias(doc.getString("alias"));
+			returnedQuestion.setTimeStamp(doc.getLong("time"));
+
+			this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, returnedQuestion);
+		} catch (NullPointerException ex) {
+			this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, id);
+		} catch (java.lang.IllegalArgumentException ex) {
+			this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, id);
+		}
+
+		return this.dbResponse;
 	}
 
 	@Override
@@ -84,7 +103,7 @@ public class QuestionDataService implements QuestionDAO {
 	@Override
 	public DbResponse updateQuestion(String id, Question question) {
 
-		ObjectId objectId= new ObjectId(id);
+		ObjectId objectId = new ObjectId(id);
 		try {
 
 			BasicDBObject newDocument = new BasicDBObject();
@@ -95,7 +114,7 @@ public class QuestionDataService implements QuestionDAO {
 
 			collection.updateOne(searchQuery, newDocument);
 
-			Document updatedDocument= collection.find(eq("_id",objectId)).first();
+			Document updatedDocument = collection.find(eq("_id", objectId)).first();
 			Question updatedQuestion = question;
 			updatedQuestion.setId(id);
 			updatedQuestion.setUserAlias(updatedDocument.getString("alias"));

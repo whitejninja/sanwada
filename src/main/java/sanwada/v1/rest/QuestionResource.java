@@ -72,4 +72,27 @@ public class QuestionResource {
 
 		}
 	}
+
+	@GET
+	@Path(value = "/{id}")
+	@Consumes(value = MediaType.APPLICATION_JSON)
+	@Produces(value = MediaType.APPLICATION_JSON)
+	public Response getQuestion(@PathParam("id") String id) {
+		QuestionDataService questionDataService = new QuestionDataService();
+		DbResponse dbResponse = questionDataService.getQuestion(id);
+
+		if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
+
+			return Response.ok(dbResponse.getQuestion()).header("location", "question/" + id).build();
+
+		} else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
+
+			return Response.status(400).header("location", "question/" + id).build();
+
+		} else {
+
+			return Response.status(500).header("location", "question/" + id).build();
+
+		}
+	}
 }
