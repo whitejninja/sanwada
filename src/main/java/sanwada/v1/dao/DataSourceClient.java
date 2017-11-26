@@ -48,4 +48,6 @@ public interface DataSourceClient<O> {
      * @return
      */
     boolean update(LinkedHashMap<String, Object> filters, Object newObject);
+    
+    boolean delete(LinkedHashMap<String, Object> filters);
 }

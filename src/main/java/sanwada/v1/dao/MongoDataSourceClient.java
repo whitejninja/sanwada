@@ -54,7 +54,7 @@ public class MongoDataSourceClient implements DataSourceClient<Document>{
 
     @Override
     public Object getDatabase() {
-        return MongoDataSourceClient.getClient().getDatabase("DiscussDatabase");
+        return MongoDataSourceClient.getClient().getDatabase("myNewDatabase");
     }
 
 
@@ -91,6 +91,7 @@ public class MongoDataSourceClient implements DataSourceClient<Document>{
     @Override
     public boolean update(LinkedHashMap<String, Object> filters, Object newObject) {
         BasicDBObject query = new BasicDBObject();
+        Document updateObject=new Document("$set", newObject);
 
         for (Map.Entry<String, Object> f : filters.entrySet()) {
             String key = f.getKey();
@@ -99,7 +100,22 @@ public class MongoDataSourceClient implements DataSourceClient<Document>{
         }
 
         Bson bsonFilter = (Bson)query;
-        Bson bsonUpdate = (Bson)newObject;
+        Bson bsonUpdate = (Bson)updateObject;
         return getCollection().updateOne(bsonFilter, bsonUpdate).wasAcknowledged();
     }
+
+	@Override
+	public boolean delete(LinkedHashMap<String, Object> filters) {
+		BasicDBObject query = new BasicDBObject();
+		
+		for (Map.Entry<String, Object> f: filters.entrySet()) {
+			String key= f.getKey();
+			Object val= f.getValue();
+			query.append(key, val);
+		}
+		
+		return getCollection().deleteOne(query).wasAcknowledged();
+	}
+    
+    
 }

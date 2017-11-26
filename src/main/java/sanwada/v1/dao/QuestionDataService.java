@@ -1,27 +1,23 @@
 package sanwada.v1.dao;
 
-import static com.mongodb.client.model.Filters.eq;
+import java.util.LinkedHashMap;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
-
-import com.mongodb.BasicDBObject;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.result.DeleteResult;
 
 import sanwada.v1.entity.DbResponse;
 import sanwada.v1.entity.Question;
 
 public class QuestionDataService implements QuestionDAO {
 
-	private MongoCollection<Document> collection;
+	private DataSourceClient<Document> client;
+	private LinkedHashMap<String, Object> filters;
 	private DbResponse dbResponse;
 
 	public QuestionDataService() {
 		try {
-			// This should be removed because of high coupling
-			DataSourceClient<Document> client = new MongoDataSourceClient();
-			this.collection = (MongoCollection<Document>) client.getCollection();
+			client = new MongoDataSourceClient();
+			filters = new LinkedHashMap<String, Object>();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -33,16 +29,15 @@ public class QuestionDataService implements QuestionDAO {
 			Document document = new Document("alias", question.getUserAlias()).append("title", question.getTitle())
 					.append("content", question.getContent());
 
+			this.filters.clear();
+			this.filters.put("title", question.getTitle());
 			// check duplicate title
-			Boolean titleAvailable = this.collection.find(eq("title", question.getTitle())).first() == null;
-
+			Boolean titleAvailable = !this.client.find(this.filters).iterator().hasNext();
+			
 			if (titleAvailable) {
-				// Generate dbObject to be persist to the database
 				Long postedTime = System.currentTimeMillis();
 				document.append("time", postedTime);
-
-				// Persist to database
-				collection.insertOne(document);
+				client.insert(document);
 
 				// Convert _id object to hexadecimal string
 				Object idObj = document.get("_id");
@@ -60,6 +55,7 @@ public class QuestionDataService implements QuestionDAO {
 				this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, createdQuestion);
 				return this.dbResponse;
 			} else {
+				System.out.println("Title not available");
 				// Build response upon failure
 				this.dbResponse = new DbResponse(DbOperationStatus.DUPLICATE_ENTRY, question);
 				// Send response upon failure
@@ -75,10 +71,12 @@ public class QuestionDataService implements QuestionDAO {
 
 	@Override
 	public DbResponse getQuestion(String id) {
-
 		try {
 			ObjectId objId = new ObjectId(id);
-			Document doc = collection.find(eq("_id", objId)).first();
+
+			this.filters.clear();
+			this.filters.put("_id", objId);
+			Document doc = this.client.find(this.filters).iterator().next();
 
 			Question returnedQuestion = new Question();
 			returnedQuestion.setId(id);
@@ -102,16 +100,13 @@ public class QuestionDataService implements QuestionDAO {
 
 		ObjectId objectId = new ObjectId(id);
 		try {
+	        Document newDocument = new Document("title", question.getTitle()).append("content", question.getContent());
+			
+			this.filters.clear();
+			this.filters.put("_id", objectId);
+			this.client.update(this.filters, newDocument);
 
-			BasicDBObject newDocument = new BasicDBObject();
-			newDocument.append("$set",
-					new BasicDBObject().append("title", question.getTitle()).append("content", question.getContent()));
-
-			BasicDBObject searchQuery = new BasicDBObject().append("_id", objectId);
-
-			collection.updateOne(searchQuery, newDocument);
-
-			Document updatedDocument = collection.find(eq("_id", objectId)).first();
+			Document updatedDocument = this.client.find(this.filters).iterator().next();
 			Question updatedQuestion = question;
 			updatedQuestion.setId(id);
 			updatedQuestion.setUserAlias(updatedDocument.getString("alias"));
@@ -135,17 +130,18 @@ public class QuestionDataService implements QuestionDAO {
 	public DbResponse removeQuestion(String id) {
 		try {
 			ObjectId objId = new ObjectId(id);
-			Document document = new Document("_id", objId);
 
-			DeleteResult res = this.collection.deleteOne(document);
+			filters.clear();
+			filters.put("_id", objId);
+			boolean isSuccess = this.client.delete(filters);
 
-			if (res.getDeletedCount() == 0) {
-
-				this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, null);
-
-			} else {
+			if (isSuccess) {
 
 				this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, id);
+				
+			} else {
+
+				this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, null);
 
 			}
 
