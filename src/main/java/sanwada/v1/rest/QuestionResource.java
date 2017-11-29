@@ -11,16 +11,20 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import sanwada.v1.dao.DbOperationStatus;
 import sanwada.v1.entity.DbResponse;
 import sanwada.v1.dao.QuestionDataService;
 import sanwada.v1.entity.Question;
 
 @Path(value = "question")
+@Api(value = "question")
 public class QuestionResource {
 
 	@POST
 	@Path(value = "create")
+	@ApiOperation(value="Creates a question")
 	@Consumes(value = MediaType.APPLICATION_JSON)
 	@Produces(value = MediaType.APPLICATION_JSON)
 	public Response createQuestion(Question question) {
