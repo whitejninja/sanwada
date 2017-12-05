@@ -24,9 +24,9 @@ public class QuestionResource {
 
 	@POST
 	@Path(value = "create")
-	@ApiOperation(value="Creates a question")
 	@Consumes(value = MediaType.APPLICATION_JSON)
 	@Produces(value = MediaType.APPLICATION_JSON)
+	@ApiOperation(value="Creates a question")
 	public Response createQuestion(Question question) {
 		QuestionDataService questionDataService = new QuestionDataService();
 		DbResponse dbResponse = questionDataService.addQuestion(question);
@@ -54,6 +54,7 @@ public class QuestionResource {
 	@Path(value = "update/{id}")
 	@Consumes(value = MediaType.APPLICATION_JSON)
 	@Produces(value = MediaType.APPLICATION_JSON)
+	@ApiOperation(value="Updates a question")
 	public Response updateQuestion(@PathParam("id") String id, Question question) {
 		QuestionDataService questionDataService = new QuestionDataService();
 		DbResponse dbResponse = questionDataService.updateQuestion(id, question);
@@ -82,6 +83,7 @@ public class QuestionResource {
 	@Path(value = "/{id}")
 	@Consumes(value = MediaType.APPLICATION_JSON)
 	@Produces(value = MediaType.APPLICATION_JSON)
+	@ApiOperation(value="Retrieve a question")
 	public Response getQuestion(@PathParam("id") String id) {
 		QuestionDataService questionDataService = new QuestionDataService();
 		DbResponse dbResponse = questionDataService.getQuestion(id);
@@ -103,6 +105,7 @@ public class QuestionResource {
 	
 	@DELETE
 	@Path(value = "/{id}")
+	@ApiOperation(value="Delete a question")
 	public Response deleteQuestion(@PathParam("id") String id) {
 		QuestionDataService questionDataService = new QuestionDataService();
 		DbResponse dbResponse = questionDataService.removeQuestion(id);
