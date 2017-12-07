@@ -5,24 +5,24 @@ import sanwada.v1.entity.Question;
 
 public interface QuestionDAO {
 
-    /**
-     * Add a question to a database
-     */
-    DbResponse addQuestion(Question question);
+  /**
+   * Add a question to a database
+   */
+  DbResponse addQuestion(Question question);
 
-    /**
-     * Get a question details based on id
-     */
-    DbResponse getQuestion(String id);
+  /**
+   * Get a question details based on id
+   */
+  DbResponse getQuestion(String id);
 
-    /**
-     * Remove a question from database
-     */
-    DbResponse removeQuestion(String id);
+  /**
+   * Remove a question from database
+   */
+  DbResponse removeQuestion(String id);
 
-    /**
-     * Update an existing question in the database
-     */
-    DbResponse updateQuestion(String id, Question newQuestion);
+  /**
+   * Update an existing question in the database
+   */
+  DbResponse updateQuestion(String id, Question newQuestion);
 
 }

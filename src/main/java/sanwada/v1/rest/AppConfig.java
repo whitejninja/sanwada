@@ -10,13 +10,13 @@ import javax.ws.rs.ApplicationPath;
 @ApplicationPath(value = "/v1")
 public class AppConfig extends Application {
 
-    @Override
-    public Set<Class<?>> getClasses() {
+  @Override
+  public Set<Class<?>> getClasses() {
 
-        final Set<Class<?>> classes = new HashSet<>();
-        // register root resource classes
-        classes.add(QuestionResource.class);
-        return classes;
+    final Set<Class<?>> classes = new HashSet<>();
+    // register root resource classes
+    classes.add(QuestionResource.class);
+    return classes;
 
-    }
+  }
 }
