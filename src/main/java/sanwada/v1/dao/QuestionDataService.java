@@ -10,154 +10,154 @@ import sanwada.v1.entity.Question;
 
 public class QuestionDataService implements QuestionDAO {
 
-	private DataSourceClient<Document> client;
-	private LinkedHashMap<String, Object> filters;
-	private DbResponse dbResponse;
+    private DataSourceClient<Document> client;
+    private LinkedHashMap<String, Object> filters;
+    private DbResponse dbResponse;
 
-	public QuestionDataService() {
-		try {
-			client = new MongoDataSourceClient();
-			filters = new LinkedHashMap<String, Object>();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public QuestionDataService() {
+        try {
+            client = new MongoDataSourceClient();
+            filters = new LinkedHashMap<String, Object>();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	@Override
-	public DbResponse addQuestion(Question question) {
-		try {
-			Document document = new Document("alias", question.getUserAlias()).append("title", question.getTitle())
-					.append("content", question.getContent());
+    @Override
+    public DbResponse addQuestion(Question question) {
+        try {
+            Document document = new Document("alias", question.getUserAlias()).append("title", question.getTitle())
+                    .append("content", question.getContent());
 
-			this.filters.clear();
-			this.filters.put("title", question.getTitle());
-			// check duplicate title
-			Boolean titleAvailable = !this.client.find(this.filters).iterator().hasNext();
-			
-			if (titleAvailable) {
-				Long postedTime = System.currentTimeMillis();
-				document.append("time", postedTime);
-				client.insert(document);
+            this.filters.clear();
+            this.filters.put("title", question.getTitle());
+            // check duplicate title
+            Boolean titleAvailable = !this.client.find(this.filters).iterator().hasNext();
 
-				// Convert _id object to hexadecimal string
-				Object idObj = document.get("_id");
-				String idStr = (String) idObj.toString();
+            if (titleAvailable) {
+                Long postedTime = System.currentTimeMillis();
+                document.append("time", postedTime);
+                client.insert(document);
 
-				// Generate response object
-				Question createdQuestion = new Question();
-				createdQuestion.setId(idStr);
-				createdQuestion.setUserAlias(document.getString("alias"));
-				createdQuestion.setTitle(document.getString("title"));
-				createdQuestion.setContent(document.getString("content"));
-				createdQuestion.setTimeStamp(document.getLong("time"));
+                // Convert _id object to hexadecimal string
+                Object idObj = document.get("_id");
+                String idStr = (String) idObj.toString();
 
-				// Build response upon success
-				this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, createdQuestion);
-				return this.dbResponse;
-			} else {
-				System.out.println("Title not available");
-				// Build response upon failure
-				this.dbResponse = new DbResponse(DbOperationStatus.DUPLICATE_ENTRY, question);
-				// Send response upon failure
-				return this.dbResponse;
-			}
+                // Generate response object
+                Question createdQuestion = new Question();
+                createdQuestion.setId(idStr);
+                createdQuestion.setUserAlias(document.getString("alias"));
+                createdQuestion.setTitle(document.getString("title"));
+                createdQuestion.setContent(document.getString("content"));
+                createdQuestion.setTimeStamp(document.getLong("time"));
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			this.dbResponse = new DbResponse(DbOperationStatus.FALIURE, null);
-			return dbResponse;
-		}
-	}
+                // Build response upon success
+                this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, createdQuestion);
+                return this.dbResponse;
+            } else {
+                System.out.println("Title not available");
+                // Build response upon failure
+                this.dbResponse = new DbResponse(DbOperationStatus.DUPLICATE_ENTRY, question);
+                // Send response upon failure
+                return this.dbResponse;
+            }
 
-	@Override
-	public DbResponse getQuestion(String id) {
-		try {
-			ObjectId objId = new ObjectId(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.dbResponse = new DbResponse(DbOperationStatus.FALIURE, null);
+            return dbResponse;
+        }
+    }
 
-			this.filters.clear();
-			this.filters.put("_id", objId);
-			Document doc = this.client.find(this.filters).iterator().next();
+    @Override
+    public DbResponse getQuestion(String id) {
+        try {
+            ObjectId objId = new ObjectId(id);
 
-			Question returnedQuestion = new Question();
-			returnedQuestion.setId(id);
-			returnedQuestion.setTitle(doc.getString("title"));
-			returnedQuestion.setContent(doc.getString("content"));
-			returnedQuestion.setUserAlias(doc.getString("alias"));
-			returnedQuestion.setTimeStamp(doc.getLong("time"));
+            this.filters.clear();
+            this.filters.put("_id", objId);
+            Document doc = this.client.find(this.filters).iterator().next();
 
-			this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, returnedQuestion);
-		} catch (NullPointerException ex) {
-			this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, id);
-		} catch (java.lang.IllegalArgumentException ex) {
-			this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, id);
-		}
+            Question returnedQuestion = new Question();
+            returnedQuestion.setId(id);
+            returnedQuestion.setTitle(doc.getString("title"));
+            returnedQuestion.setContent(doc.getString("content"));
+            returnedQuestion.setUserAlias(doc.getString("alias"));
+            returnedQuestion.setTimeStamp(doc.getLong("time"));
 
-		return this.dbResponse;
-	}
+            this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, returnedQuestion);
+        } catch (NullPointerException ex) {
+            this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, id);
+        } catch (java.lang.IllegalArgumentException ex) {
+            this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, id);
+        }
 
-	@Override
-	public DbResponse updateQuestion(String id, Question question) {
+        return this.dbResponse;
+    }
 
-		ObjectId objectId = new ObjectId(id);
-		try {
-	        Document newDocument = new Document("title", question.getTitle()).append("content", question.getContent());
-			
-			this.filters.clear();
-			this.filters.put("_id", objectId);
-			this.client.update(this.filters, newDocument);
+    @Override
+    public DbResponse updateQuestion(String id, Question question) {
 
-			Document updatedDocument = this.client.find(this.filters).iterator().next();
-			Question updatedQuestion = question;
-			updatedQuestion.setId(id);
-			updatedQuestion.setUserAlias(updatedDocument.getString("alias"));
-			updatedQuestion.setTitle(updatedDocument.getString("title"));
-			updatedQuestion.setContent(updatedDocument.getString("content"));
-			updatedQuestion.setTimeStamp(updatedDocument.getLong("time"));
+        ObjectId objectId = new ObjectId(id);
+        try {
+            Document newDocument = new Document("title", question.getTitle()).append("content", question.getContent());
 
-			this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, updatedQuestion);
+            this.filters.clear();
+            this.filters.put("_id", objectId);
+            this.client.update(this.filters, newDocument);
 
-		} catch (Exception e) {
+            Document updatedDocument = this.client.find(this.filters).iterator().next();
+            Question updatedQuestion = question;
+            updatedQuestion.setId(id);
+            updatedQuestion.setUserAlias(updatedDocument.getString("alias"));
+            updatedQuestion.setTitle(updatedDocument.getString("title"));
+            updatedQuestion.setContent(updatedDocument.getString("content"));
+            updatedQuestion.setTimeStamp(updatedDocument.getLong("time"));
 
-			e.printStackTrace();
-			this.dbResponse = new DbResponse(DbOperationStatus.FALIURE, null);
-			return dbResponse;
-		}
+            this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, updatedQuestion);
 
-		return dbResponse;
-	}
+        } catch (Exception e) {
 
-	@Override
-	public DbResponse removeQuestion(String id) {
-		try {
-			ObjectId objId = new ObjectId(id);
+            e.printStackTrace();
+            this.dbResponse = new DbResponse(DbOperationStatus.FALIURE, null);
+            return dbResponse;
+        }
 
-			filters.clear();
-			filters.put("_id", objId);
-			boolean isSuccess = this.client.delete(filters);
+        return dbResponse;
+    }
 
-			if (isSuccess) {
+    @Override
+    public DbResponse removeQuestion(String id) {
+        try {
+            ObjectId objId = new ObjectId(id);
 
-				this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, id);
-				
-			} else {
+            filters.clear();
+            filters.put("_id", objId);
+            boolean isSuccess = this.client.delete(filters);
 
-				this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, null);
+            if (isSuccess) {
 
-			}
+                this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, id);
 
-		} catch (IllegalArgumentException ex) {
+            } else {
 
-			// Invalid request error
-			this.dbResponse = new DbResponse(DbOperationStatus.FALIURE, null);
+                this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, null);
 
-		} catch (Exception ex) {
+            }
 
-			// Invalid request error
-			ex.printStackTrace();
-			this.dbResponse = new DbResponse(DbOperationStatus.FALIURE, null);
+        } catch (IllegalArgumentException ex) {
 
-		}
+            // Invalid request error
+            this.dbResponse = new DbResponse(DbOperationStatus.FALIURE, null);
 
-		return this.dbResponse;
-	}
+        } catch (Exception ex) {
+
+            // Invalid request error
+            ex.printStackTrace();
+            this.dbResponse = new DbResponse(DbOperationStatus.FALIURE, null);
+
+        }
+
+        return this.dbResponse;
+    }
 }

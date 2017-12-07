@@ -8,8 +8,8 @@ public enum DbOperationStatus {
     SUCCESS,
 
     /*
-     * Database operation intended to perform on the database record was not
-     * found in the database.
+     * Database operation intended to perform on the database record was not found
+     * in the database.
      */
     NO_SUCH_RECORD,
 
@@ -20,8 +20,8 @@ public enum DbOperationStatus {
     FALIURE,
 
     /*
-     * Database operation was a failure. Duplicate entries for unique fields
-     * found in the database.
+     * Database operation was a failure. Duplicate entries for unique fields found
+     * in the database.
      */
     DUPLICATE_ENTRY;
 }

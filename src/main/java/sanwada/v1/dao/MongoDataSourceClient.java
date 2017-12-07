@@ -15,7 +15,7 @@ import com.mongodb.WriteConcern;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 
-public class MongoDataSourceClient implements DataSourceClient<Document>{
+public class MongoDataSourceClient implements DataSourceClient<Document> {
 
     private static MongoClient mClient;
 
@@ -57,7 +57,6 @@ public class MongoDataSourceClient implements DataSourceClient<Document>{
         return MongoDataSourceClient.getClient().getDatabase("myNewDatabase");
     }
 
-
     protected void finalize() throws Throwable {
     }
 
@@ -74,9 +73,9 @@ public class MongoDataSourceClient implements DataSourceClient<Document>{
             query.append(key, val);
         }
 
-        Bson bsonFilter = (Bson)query;
-        FindIterable<Document> docs= getCollection().find(bsonFilter);
-        //return (Iterator<Object>) docs;
+        Bson bsonFilter = (Bson) query;
+        FindIterable<Document> docs = getCollection().find(bsonFilter);
+        // return (Iterator<Object>) docs;
         return docs;
     }
 
@@ -85,13 +84,13 @@ public class MongoDataSourceClient implements DataSourceClient<Document>{
      */
     @Override
     public void insert(Object object) {
-        getCollection().insertOne((Document)object);
+        getCollection().insertOne((Document) object);
     }
 
     @Override
     public boolean update(LinkedHashMap<String, Object> filters, Object newObject) {
         BasicDBObject query = new BasicDBObject();
-        Document updateObject=new Document("$set", newObject);
+        Document updateObject = new Document("$set", newObject);
 
         for (Map.Entry<String, Object> f : filters.entrySet()) {
             String key = f.getKey();
@@ -99,23 +98,22 @@ public class MongoDataSourceClient implements DataSourceClient<Document>{
             query.append(key, val);
         }
 
-        Bson bsonFilter = (Bson)query;
-        Bson bsonUpdate = (Bson)updateObject;
+        Bson bsonFilter = (Bson) query;
+        Bson bsonUpdate = (Bson) updateObject;
         return getCollection().updateOne(bsonFilter, bsonUpdate).wasAcknowledged();
     }
 
-	@Override
-	public boolean delete(LinkedHashMap<String, Object> filters) {
-		BasicDBObject query = new BasicDBObject();
-		
-		for (Map.Entry<String, Object> f: filters.entrySet()) {
-			String key= f.getKey();
-			Object val= f.getValue();
-			query.append(key, val);
-		}
-		
-		return getCollection().deleteOne(query).wasAcknowledged();
-	}
-    
-    
+    @Override
+    public boolean delete(LinkedHashMap<String, Object> filters) {
+        BasicDBObject query = new BasicDBObject();
+
+        for (Map.Entry<String, Object> f : filters.entrySet()) {
+            String key = f.getKey();
+            Object val = f.getValue();
+            query.append(key, val);
+        }
+
+        return getCollection().deleteOne(query).wasAcknowledged();
+    }
+
 }

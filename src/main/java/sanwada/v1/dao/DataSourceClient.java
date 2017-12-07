@@ -3,8 +3,8 @@ package sanwada.v1.dao;
 import java.util.LinkedHashMap;
 
 /**
- * Represents the operational contract between a DataSource
- * and the client who interacts with it.
+ * Represents the operational contract between a DataSource and the client who
+ * interacts with it.
  */
 public interface DataSourceClient<O> {
 
@@ -22,8 +22,7 @@ public interface DataSourceClient<O> {
     Object getDatabase();
 
     /**
-     * @return object represent the table/collection DataSourceClient
-     *         interacts with
+     * @return object represent the table/collection DataSourceClient interacts with
      */
     Object getCollection();
 
@@ -37,17 +36,19 @@ public interface DataSourceClient<O> {
 
     /**
      * Inserts object to datasource
+     * 
      * @param object
      */
     void insert(Object object);
 
     /**
      * Update objects that match filter with provided values
+     * 
      * @param filter
      * @param values
      * @return
      */
     boolean update(LinkedHashMap<String, Object> filters, Object newObject);
-    
+
     boolean delete(LinkedHashMap<String, Object> filters);
 }

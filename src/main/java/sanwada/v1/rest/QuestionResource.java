@@ -19,102 +19,103 @@ import sanwada.v1.entity.Question;
 @Path(value = "question")
 public class QuestionResource {
 
-	@POST
-	@Path(value = "create")
-	@Consumes(value = MediaType.APPLICATION_JSON)
-	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response createQuestion(Question question) {
-		QuestionDataService questionDataService = new QuestionDataService();
-		DbResponse dbResponse = questionDataService.addQuestion(question);
+    @POST
+    @Path(value = "create")
+    @Consumes(value = MediaType.APPLICATION_JSON)
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response createQuestion(Question question) {
+        QuestionDataService questionDataService = new QuestionDataService();
+        DbResponse dbResponse = questionDataService.addQuestion(question);
 
-		if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
+        if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
 
-			return Response.status(201).header("location", "question/create").entity(dbResponse.getQuestion()).build();
+            return Response.status(201).header("location", "question/create").entity(dbResponse.getQuestion()).build();
 
-		} else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
+        } else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
 
-			return Response.status(400).header("location", "question/create").build();
+            return Response.status(400).header("location", "question/create").build();
 
-		} else if (dbResponse.getStatus().equals(DbOperationStatus.DUPLICATE_ENTRY)) {
+        } else if (dbResponse.getStatus().equals(DbOperationStatus.DUPLICATE_ENTRY)) {
 
-			return Response.status(409).header("location", "question/create").build();
+            return Response.status(409).header("location", "question/create").build();
 
-		} else {
+        } else {
 
-			return Response.status(500).header("location", "question/create").build();
+            return Response.status(500).header("location", "question/create").build();
 
-		}
-	}
+        }
+    }
 
-	@PUT
-	@Path(value = "update/{id}")
-	@Consumes(value = MediaType.APPLICATION_JSON)
-	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response updateQuestion(@PathParam("id") String id, Question question) {
-		QuestionDataService questionDataService = new QuestionDataService();
-		DbResponse dbResponse = questionDataService.updateQuestion(id, question);
+    @PUT
+    @Path(value = "update/{id}")
+    @Consumes(value = MediaType.APPLICATION_JSON)
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response updateQuestion(@PathParam("id") String id, Question question) {
+        QuestionDataService questionDataService = new QuestionDataService();
+        DbResponse dbResponse = questionDataService.updateQuestion(id, question);
 
-		if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
+        if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
 
-			return Response.status(201).header("location", "question/update/" + id).entity(dbResponse.getQuestion())
-					.build();
+            return Response.status(201).header("location", "question/update/" + id).entity(dbResponse.getQuestion())
+                    .build();
 
-		} else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
+        } else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
 
-			return Response.status(400).header("location", "question/update/" + id).build();
+            return Response.status(400).header("location", "question/update/" + id).build();
 
-		} else if (dbResponse.getStatus().equals(DbOperationStatus.DUPLICATE_ENTRY)) {
+        } else if (dbResponse.getStatus().equals(DbOperationStatus.DUPLICATE_ENTRY)) {
 
-			return Response.status(409).header("location", "question/update/" + id).build();
+            return Response.status(409).header("location", "question/update/" + id).build();
 
-		} else {
+        } else {
 
-			return Response.status(500).header("location", "question/update/" + id).build();
+            return Response.status(500).header("location", "question/update/" + id).build();
 
-		}
-	}
+        }
+    }
 
-	@GET
-	@Path(value = "/{id}")
-	@Consumes(value = MediaType.APPLICATION_JSON)
-	@Produces(value = MediaType.APPLICATION_JSON)
-	public Response getQuestion(@PathParam("id") String id) {
-		QuestionDataService questionDataService = new QuestionDataService();
-		DbResponse dbResponse = questionDataService.getQuestion(id);
+    @GET
+    @Path(value = "/{id}")
+    @Consumes(value = MediaType.APPLICATION_JSON)
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response getQuestion(@PathParam("id") String id) {
+        QuestionDataService questionDataService = new QuestionDataService();
+        DbResponse dbResponse = questionDataService.getQuestion(id);
 
-		if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
+        if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
 
-			return Response.ok(dbResponse.getQuestion()).header("location", "question/" + id).build();
+            return Response.ok(dbResponse.getQuestion()).header("location", "question/" + id).build();
 
-		} else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
+        } else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
 
-			return Response.status(400).header("location", "question/" + id).build();
+            return Response.status(400).header("location", "question/" + id).build();
 
-		} else {
+        } else {
 
-			return Response.status(500).header("location", "question/" + id).build();
+            return Response.status(500).header("location", "question/" + id).build();
 
-		}
-	}
-	
-	@DELETE
-	@Path(value = "/{id}")
-	public Response deleteQuestion(@PathParam("id") String id) {
-		QuestionDataService questionDataService = new QuestionDataService();
-		DbResponse dbResponse = questionDataService.removeQuestion(id);
-		
-		if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
+        }
+    }
 
-			return Response.ok(dbResponse.getQuestion()).header("location", "account/deleted").entity(dbResponse.getQuestion()).build();
+    @DELETE
+    @Path(value = "/{id}")
+    public Response deleteQuestion(@PathParam("id") String id) {
+        QuestionDataService questionDataService = new QuestionDataService();
+        DbResponse dbResponse = questionDataService.removeQuestion(id);
 
-		} else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
+        if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
 
-			return Response.status(400).header("location", "question/" + id).build();
+            return Response.ok(dbResponse.getQuestion()).header("location", "account/deleted")
+                    .entity(dbResponse.getQuestion()).build();
 
-		} else {
+        } else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
 
-			return Response.status(500).header("location", "question/" + id).build();
+            return Response.status(400).header("location", "question/" + id).build();
 
-		}
-	}
+        } else {
+
+            return Response.status(500).header("location", "question/" + id).build();
+
+        }
+    }
 }
