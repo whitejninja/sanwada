@@ -1,6 +1,9 @@
-package sanwada.v1.rest;
+package sanawada.v1.bootstrap;
 
 import javax.ws.rs.core.Application;
+
+import sanwada.v1.rest.FooResource;
+import sanwada.v1.rest.QuestionResource;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +19,7 @@ public class AppConfig extends Application {
     final Set<Class<?>> classes = new HashSet<>();
     // register root resource classes
     classes.add(QuestionResource.class);
+    classes.add(FooResource.class);
     return classes;
 
   }
