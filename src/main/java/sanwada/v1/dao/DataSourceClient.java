@@ -9,6 +9,11 @@ import java.util.LinkedHashMap;
 public interface DataSourceClient<O> {
 
   /**
+   * Initialize a connection to the datasource
+   */
+  void initializeConnection();
+
+  /**
    * @return object should represent a connection to a datasource
    */
   static Object getClient() {

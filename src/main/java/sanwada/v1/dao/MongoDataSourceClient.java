@@ -17,34 +17,41 @@ import com.mongodb.client.MongoCollection;
 
 public class MongoDataSourceClient implements DataSourceClient<Document> {
 
+  private String host;
+  private int port;
   private static MongoClient mClient;
 
   public MongoDataSourceClient() {
   }
 
+  public MongoDataSourceClient(String host, int port) {
+    this.host = host;
+    this.port = port;
+    initializeConnection();
+  }
+
+  public void initializeConnection(){
+    // Sets options for mongo client object
+    MongoClientOptions.Builder clientOptions = new MongoClientOptions.Builder();
+
+    // Deafult read concern of the server is used
+    clientOptions.readConcern(ReadConcern.DEFAULT);
+
+    // All the write operation at the server end are acknowledged by
+    // mongo client.
+    // Hence the operation's status can be checked.
+    clientOptions.writeConcern(WriteConcern.ACKNOWLEDGED);
+
+    // All the write operation at the server end are acknowledged by
+    // mongo client.
+    // Hence the operation's status can be checked.
+    clientOptions.writeConcern(WriteConcern.ACKNOWLEDGED);
+
+    mClient = new MongoClient(new ServerAddress(host, port), clientOptions.build());
+  }
+
   public synchronized static MongoClient getClient() {
-    if (mClient == null) {
-      // Sets options for mongo client object
-      MongoClientOptions.Builder clientOptions = new MongoClientOptions.Builder();
-
-      // Deafult read concern of the server is used
-      clientOptions.readConcern(ReadConcern.DEFAULT);
-
-      // All the write operation at the server end are acknowledged by
-      // mongo client.
-      // Hence the operation's status can be checked.
-      clientOptions.writeConcern(WriteConcern.ACKNOWLEDGED);
-
-      // All the write operation at the server end are acknowledged by
-      // mongo client.
-      // Hence the operation's status can be checked.
-      clientOptions.writeConcern(WriteConcern.ACKNOWLEDGED);
-
-      mClient = new MongoClient(new ServerAddress("localhost"), clientOptions.build());
-      return mClient;
-    }
     return mClient;
-
   }
 
   public MongoCollection<Document> getCollection() {
