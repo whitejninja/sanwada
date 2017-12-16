@@ -2,14 +2,18 @@ package sanwada.v1.rest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.eclipse.persistence.internal.sessions.DirectCollectionChangeRecord.NULL;
 
 import sanwada.v1.dao.DbOperationStatus;
 import sanwada.v1.entity.DbResponse;
@@ -77,20 +81,27 @@ public class QuestionResource {
   }
 
   @GET
-  @Path(value = "/{id}")
+  @Path(value = "")
   @Consumes(value = MediaType.APPLICATION_JSON)
   @Produces(value = MediaType.APPLICATION_JSON)
-  public Response getQuestion(@PathParam("id") String id) {
+  public Response getQuestion(@QueryParam("id") String id, @QueryParam("title") String title) {
+    
     QuestionDataService questionDataService = new QuestionDataService();
-    DbResponse dbResponse = questionDataService.getQuestion(id);
-
+    DbResponse dbResponse = null;
+    if (id != null) {
+      dbResponse = questionDataService.getQuestion(id);
+    } else if (title != null) {
+      dbResponse = questionDataService.getQuestionByTitle(title);
+    } else {
+      return Response.status(400).header("location", "question/" + id).build();
+    }
     if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
 
       return Response.ok(dbResponse.getQuestion()).header("location", "question/" + id).build();
 
     } else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
 
-      return Response.status(400).header("location", "question/" + id).build();
+      return Response.status(404).header("location", "question/" + id).build();
 
     } else {
 

@@ -87,10 +87,40 @@ public class QuestionDataService implements QuestionDAO {
       returnedQuestion.setTimeStamp(doc.getLong("time"));
 
       this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, returnedQuestion);
+    } catch (java.util.NoSuchElementException ex) {
+      this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, id);
     } catch (NullPointerException ex) {
       this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, id);
     } catch (java.lang.IllegalArgumentException ex) {
       this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, id);
+    }
+
+    return this.dbResponse;
+  }
+
+  @Override
+  public DbResponse getQuestionByTitle(String title) {
+    try {
+      this.filters.clear();
+      this.filters.put("title", title);
+      Document doc = this.client.find(this.filters).iterator().next();
+
+      Question returnedQuestion = new Question();
+      Object idObj = doc.get("_id");
+      String idStr = (String) idObj.toString();
+      returnedQuestion.setId(idStr);
+      returnedQuestion.setTitle(doc.getString("title"));
+      returnedQuestion.setContent(doc.getString("content"));
+      returnedQuestion.setUserAlias(doc.getString("alias"));
+      returnedQuestion.setTimeStamp(doc.getLong("time"));
+
+      this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, returnedQuestion);
+    } catch (java.util.NoSuchElementException ex) {
+      this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, title);
+    } catch (NullPointerException ex) {
+      this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, title);
+    } catch (java.lang.IllegalArgumentException ex) {
+      this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, title);
     }
 
     return this.dbResponse;
