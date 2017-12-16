@@ -2,7 +2,6 @@ package sanwada.v1.rest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -12,8 +11,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.eclipse.persistence.internal.sessions.DirectCollectionChangeRecord.NULL;
 
 import sanwada.v1.dao.DbOperationStatus;
 import sanwada.v1.entity.DbResponse;
@@ -35,10 +32,6 @@ public class QuestionResource {
 
       return Response.status(201).header("location", "question/create")
               .entity(dbResponse.getQuestion()).build();
-
-    } else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
-
-      return Response.status(400).header("location", "question/create").build();
 
     } else if (dbResponse.getStatus().equals(DbOperationStatus.DUPLICATE_ENTRY)) {
 
@@ -85,7 +78,7 @@ public class QuestionResource {
   @Consumes(value = MediaType.APPLICATION_JSON)
   @Produces(value = MediaType.APPLICATION_JSON)
   public Response getQuestion(@QueryParam("id") String id, @QueryParam("title") String title) {
-    
+
     QuestionDataService questionDataService = new QuestionDataService();
     DbResponse dbResponse = null;
     if (id != null) {
