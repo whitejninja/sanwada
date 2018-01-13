@@ -1,5 +1,6 @@
 package sanwada.v1.rest;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -19,13 +20,13 @@ import sanwada.v1.entity.Question;
 
 @Path(value = "question")
 public class QuestionResource {
+  @Inject QuestionDataService questionDataService;
 
   @POST
   @Path(value = "create")
   @Consumes(value = MediaType.APPLICATION_JSON)
   @Produces(value = MediaType.APPLICATION_JSON)
   public Response createQuestion(Question question) {
-    QuestionDataService questionDataService = new QuestionDataService();
     DbResponse dbResponse = questionDataService.addQuestion(question);
 
     if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
@@ -49,7 +50,6 @@ public class QuestionResource {
   @Consumes(value = MediaType.APPLICATION_JSON)
   @Produces(value = MediaType.APPLICATION_JSON)
   public Response updateQuestion(@PathParam("id") String id, Question question) {
-    QuestionDataService questionDataService = new QuestionDataService();
     DbResponse dbResponse = questionDataService.updateQuestion(id, question);
 
     if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
@@ -78,8 +78,6 @@ public class QuestionResource {
   @Consumes(value = MediaType.APPLICATION_JSON)
   @Produces(value = MediaType.APPLICATION_JSON)
   public Response getQuestion(@QueryParam("id") String id, @QueryParam("title") String title) {
-
-    QuestionDataService questionDataService = new QuestionDataService();
     DbResponse dbResponse = null;
     if (id != null) {
       dbResponse = questionDataService.getQuestion(id);
@@ -106,7 +104,6 @@ public class QuestionResource {
   @DELETE
   @Path(value = "/{id}")
   public Response deleteQuestion(@PathParam("id") String id) {
-    QuestionDataService questionDataService = new QuestionDataService();
     DbResponse dbResponse = questionDataService.removeQuestion(id);
 
     if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {

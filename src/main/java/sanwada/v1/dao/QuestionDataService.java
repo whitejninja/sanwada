@@ -2,6 +2,8 @@ package sanwada.v1.dao;
 
 import java.util.LinkedHashMap;
 
+import javax.inject.Inject;
+
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -10,14 +12,14 @@ import sanwada.v1.entity.Question;
 
 public class QuestionDataService implements QuestionDAO {
 
-  private DataSourceClient<Document> client;
+  @Inject DataSourceClient<Document> client;
   private LinkedHashMap<String, Object> filters;
   private DbResponse dbResponse;
-
+  
   public QuestionDataService() {
     try {
-      client = new MongoDataSourceClient();
       filters = new LinkedHashMap<String, Object>();
+      System.out.println("Work");
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -103,6 +105,7 @@ public class QuestionDataService implements QuestionDAO {
     try {
       this.filters.clear();
       this.filters.put("title", title);
+      System.out.println(this.client);
       Document doc = this.client.find(this.filters).iterator().next();
 
       Question returnedQuestion = new Question();
@@ -116,9 +119,9 @@ public class QuestionDataService implements QuestionDAO {
 
       this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, returnedQuestion);
     } catch (java.util.NoSuchElementException ex) {
-      this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, title);
+      this.dbResponse = new DbResponse(DbOperationStatus.FALIURE, title);
     } catch (NullPointerException ex) {
-      this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, title);
+      this.dbResponse = new DbResponse(DbOperationStatus.FALIURE, title);
     } catch (java.lang.IllegalArgumentException ex) {
       this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, title);
     }

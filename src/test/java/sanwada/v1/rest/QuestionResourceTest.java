@@ -21,7 +21,7 @@ public class QuestionResourceTest {
   }
 
   @Test
-  public void getQuestionByTitle_idIsAvailableInTheDB_200StatusCode() {
+  public void getQuestionByTitle_titleIsAvailableInTheDB_200StatusCode() {
     Question question = mock(Question.class);
     when(question.getTitle()).thenReturn("test_title");
     when(question.getContent()).thenReturn("test_content");
