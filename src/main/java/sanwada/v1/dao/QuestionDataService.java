@@ -19,7 +19,6 @@ public class QuestionDataService implements QuestionDAO {
   public QuestionDataService() {
     try {
       filters = new LinkedHashMap<String, Object>();
-      System.out.println("Work");
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -58,10 +57,8 @@ public class QuestionDataService implements QuestionDAO {
         this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, createdQuestion);
         return this.dbResponse;
       } else {
-        System.out.println("Title not available");
         // Build response upon failure
         this.dbResponse = new DbResponse(DbOperationStatus.DUPLICATE_ENTRY, question);
-        // Send response upon failure
         return this.dbResponse;
       }
 
@@ -105,7 +102,6 @@ public class QuestionDataService implements QuestionDAO {
     try {
       this.filters.clear();
       this.filters.put("title", title);
-      System.out.println(this.client);
       Document doc = this.client.find(this.filters).iterator().next();
 
       Question returnedQuestion = new Question();

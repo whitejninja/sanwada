@@ -9,6 +9,9 @@ import static org.mockito.Mockito.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import sanwada.v1.dao.DbOperationStatus;
+import sanwada.v1.dao.QuestionDataService;
+import sanwada.v1.entity.DbResponse;
 import sanwada.v1.entity.Question;
 
 public class QuestionResourceTest {
@@ -23,69 +26,56 @@ public class QuestionResourceTest {
   @Test
   public void getQuestionByTitle_titleIsAvailableInTheDB_200StatusCode() {
     Question question = mock(Question.class);
-    when(question.getTitle()).thenReturn("test_title");
-    when(question.getContent()).thenReturn("test_content");
-    when(question.getUserAlias()).thenReturn("test_alias");
+    QuestionDataService dataService = mock(QuestionDataService.class);
+    when(dataService.getQuestionByTitle("title"))
+            .thenReturn(new DbResponse(DbOperationStatus.SUCCESS, question));
 
-    Response res = questionResource.createQuestion(question);
+    questionResource.questionDataService = dataService;
 
-    res = questionResource.getQuestion(null, "test_title");
+    Response res = questionResource.getQuestion(null, "title");
 
-    assertNotNull(res);
     assertEquals(res.getStatus(), 200);
   }
 
   @Test
   public void getQuestionById_idIsAvailableInTheDB_200StatusCode() {
     Question question = mock(Question.class);
-    when(question.getTitle()).thenReturn("test_title");
-    when(question.getContent()).thenReturn("test_content");
-    when(question.getUserAlias()).thenReturn("test_alias");
+    QuestionDataService dataService = mock(QuestionDataService.class);
+    when(dataService.getQuestion("id"))
+            .thenReturn(new DbResponse(DbOperationStatus.SUCCESS, question));
 
-    Response res = questionResource.createQuestion(question);
+    questionResource.questionDataService = dataService;
 
-    String id = "";
-    if (res.getStatus() == 201) {
-      id = ((Question) res.getEntity()).getId();
-    } else {
-      Response res2 = questionResource.getQuestion(null, "test_title");
-      id = ((Question) res2.getEntity()).getId();
-    }
-    res = questionResource.getQuestion(id, null);
-    assertNotNull(res);
+    Response res = questionResource.getQuestion("id", null);
+
     assertEquals(res.getStatus(), 200);
   }
 
   @Test
   public void createQuestion_titleIsAvailable_201StatusCode() {
     Question question = mock(Question.class);
-    when(question.getTitle()).thenReturn("test_title");
-    when(question.getContent()).thenReturn("test_content");
-    when(question.getUserAlias()).thenReturn("test_alias");
+    QuestionDataService dataService = mock(QuestionDataService.class);
+    when(dataService.addQuestion(question))
+            .thenReturn(new DbResponse(DbOperationStatus.SUCCESS, question));
 
-    Response res = questionResource.getQuestion(null, "test_title");
-    if (res.getStatus() == 200) {
-      String id = ((Question) res.getEntity()).getId();
-      questionResource.deleteQuestion(id);
-    }
-    res = questionResource.createQuestion(question);
-    assertNotNull(res);
+    questionResource.questionDataService = dataService;
+
+    Response res = questionResource.createQuestion(question);
+
     assertEquals(res.getStatus(), 201);
   }
 
   @Test
   public void createQuestion_titleIsNotAvailable_409StatusCode() {
     Question question = mock(Question.class);
-    when(question.getTitle()).thenReturn("test_title");
-    when(question.getContent()).thenReturn("test_content");
-    when(question.getUserAlias()).thenReturn("test_alias");
+    QuestionDataService dataService = mock(QuestionDataService.class);
+    when(dataService.addQuestion(question))
+            .thenReturn(new DbResponse(DbOperationStatus.DUPLICATE_ENTRY, question));
 
-    Response res = questionResource.getQuestion(null, "test_title");
-    if (res.getStatus() == 200) {
-      questionResource.createQuestion(question);
-    }
-    res = questionResource.createQuestion(question);
-    assertNotNull(res);
+    questionResource.questionDataService = dataService;
+
+    Response res = questionResource.createQuestion(question);
+
     assertEquals(res.getStatus(), 409);
   }
 }

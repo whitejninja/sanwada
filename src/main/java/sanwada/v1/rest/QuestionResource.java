@@ -20,7 +20,8 @@ import sanwada.v1.entity.Question;
 
 @Path(value = "question")
 public class QuestionResource {
-  @Inject QuestionDataService questionDataService;
+  @Inject
+  QuestionDataService questionDataService;
 
   @POST
   @Path(value = "create")
