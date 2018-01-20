@@ -55,7 +55,7 @@ public class QuestionResource {
 
     if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
 
-      return Response.status(201).header("location", "question/update/" + id)
+      return Response.ok().header("location", "question/update/" + id)
               .entity(dbResponse.getQuestion())
               .build();
 
