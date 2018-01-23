@@ -14,6 +14,11 @@ public interface QuestionDAO {
    * Get a question details based on id
    */
   DbResponse getQuestion(String id);
+  
+  /**
+   * Get a question details based on title
+   */
+  DbResponse getQuestionByTitle(String title);
 
   /**
    * Remove a question from database

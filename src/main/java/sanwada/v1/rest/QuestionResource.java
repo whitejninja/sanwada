@@ -1,5 +1,6 @@
 package sanwada.v1.rest;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -8,6 +9,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -18,23 +20,20 @@ import sanwada.v1.entity.Question;
 
 @Path(value = "question")
 public class QuestionResource {
+  @Inject
+  QuestionDataService questionDataService;
 
   @POST
   @Path(value = "create")
   @Consumes(value = MediaType.APPLICATION_JSON)
   @Produces(value = MediaType.APPLICATION_JSON)
   public Response createQuestion(Question question) {
-    QuestionDataService questionDataService = new QuestionDataService();
     DbResponse dbResponse = questionDataService.addQuestion(question);
 
     if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
 
       return Response.status(201).header("location", "question/create")
               .entity(dbResponse.getQuestion()).build();
-
-    } else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
-
-      return Response.status(400).header("location", "question/create").build();
 
     } else if (dbResponse.getStatus().equals(DbOperationStatus.DUPLICATE_ENTRY)) {
 
@@ -52,12 +51,11 @@ public class QuestionResource {
   @Consumes(value = MediaType.APPLICATION_JSON)
   @Produces(value = MediaType.APPLICATION_JSON)
   public Response updateQuestion(@PathParam("id") String id, Question question) {
-    QuestionDataService questionDataService = new QuestionDataService();
     DbResponse dbResponse = questionDataService.updateQuestion(id, question);
 
     if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
 
-      return Response.status(201).header("location", "question/update/" + id)
+      return Response.ok().header("location", "question/update/" + id)
               .entity(dbResponse.getQuestion())
               .build();
 
@@ -77,20 +75,25 @@ public class QuestionResource {
   }
 
   @GET
-  @Path(value = "/{id}")
+  @Path(value = "")
   @Consumes(value = MediaType.APPLICATION_JSON)
   @Produces(value = MediaType.APPLICATION_JSON)
-  public Response getQuestion(@PathParam("id") String id) {
-    QuestionDataService questionDataService = new QuestionDataService();
-    DbResponse dbResponse = questionDataService.getQuestion(id);
-
+  public Response getQuestion(@QueryParam("id") String id, @QueryParam("title") String title) {
+    DbResponse dbResponse = null;
+    if (id != null) {
+      dbResponse = questionDataService.getQuestion(id);
+    } else if (title != null) {
+      dbResponse = questionDataService.getQuestionByTitle(title);
+    } else {
+      return Response.status(400).header("location", "question/" + id).build();
+    }
     if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
 
       return Response.ok(dbResponse.getQuestion()).header("location", "question/" + id).build();
 
     } else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
 
-      return Response.status(400).header("location", "question/" + id).build();
+      return Response.status(404).header("location", "question/" + id).build();
 
     } else {
 
@@ -102,7 +105,6 @@ public class QuestionResource {
   @DELETE
   @Path(value = "/{id}")
   public Response deleteQuestion(@PathParam("id") String id) {
-    QuestionDataService questionDataService = new QuestionDataService();
     DbResponse dbResponse = questionDataService.removeQuestion(id);
 
     if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {

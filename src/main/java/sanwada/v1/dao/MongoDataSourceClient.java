@@ -24,6 +24,7 @@ public class MongoDataSourceClient implements DataSourceClient<Document> {
   public MongoDataSourceClient() {
   }
 
+<<<<<<< HEAD
   public MongoDataSourceClient(String host, int port) {
     this.host = host;
     this.port = port;
@@ -41,6 +42,23 @@ public class MongoDataSourceClient implements DataSourceClient<Document> {
     // mongo client.
     // Hence the operation's status can be checked.
     clientOptions.writeConcern(WriteConcern.ACKNOWLEDGED);
+=======
+  public synchronized static MongoClient getClient() {
+    if (mClient == null) {
+      // Sets options for Mongo client object
+      MongoClientOptions.Builder clientOptions = new MongoClientOptions.Builder();
+
+      // Default read concern of the server is used
+      clientOptions.readConcern(ReadConcern.DEFAULT);
+
+      // All the write operation at the server end are acknowledged by Mongo client.
+      // Hence the operation's status can be checked.
+      clientOptions.writeConcern(WriteConcern.ACKNOWLEDGED);
+
+      // All the write operation at the server end are acknowledged by Mongo client.
+      // Hence the operation's status can be checked.
+      clientOptions.writeConcern(WriteConcern.ACKNOWLEDGED);
+>>>>>>> remotes/origin/issue/tests-integration
 
     // All the write operation at the server end are acknowledged by
     // mongo client.
@@ -62,14 +80,14 @@ public class MongoDataSourceClient implements DataSourceClient<Document> {
 
   @Override
   public Object getDatabase() {
-    return MongoDataSourceClient.getClient().getDatabase("myNewDatabase");
+    return MongoDataSourceClient.getClient().getDatabase("DiscussDatabase");
   }
 
   protected void finalize() throws Throwable {
   }
 
   /*
-   * @param filter must be a subtype of org.bson.BSON
+   * @param filter must be a sub type of org.bson.BSON
    */
   @Override
   public Iterable<Document> find(LinkedHashMap<String, Object> filters) {

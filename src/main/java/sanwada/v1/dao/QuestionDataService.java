@@ -2,6 +2,8 @@ package sanwada.v1.dao;
 
 import java.util.LinkedHashMap;
 
+import javax.inject.Inject;
+
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -10,13 +12,12 @@ import sanwada.v1.entity.Question;
 
 public class QuestionDataService implements QuestionDAO {
 
-  private DataSourceClient<Document> client;
+  @Inject DataSourceClient<Document> client;
   private LinkedHashMap<String, Object> filters;
   private DbResponse dbResponse;
-
+  
   public QuestionDataService() {
     try {
-      client = new MongoDataSourceClient();
       filters = new LinkedHashMap<String, Object>();
     } catch (Exception e) {
       e.printStackTrace();
@@ -56,10 +57,8 @@ public class QuestionDataService implements QuestionDAO {
         this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, createdQuestion);
         return this.dbResponse;
       } else {
-        System.out.println("Title not available");
         // Build response upon failure
         this.dbResponse = new DbResponse(DbOperationStatus.DUPLICATE_ENTRY, question);
-        // Send response upon failure
         return this.dbResponse;
       }
 
@@ -87,10 +86,40 @@ public class QuestionDataService implements QuestionDAO {
       returnedQuestion.setTimeStamp(doc.getLong("time"));
 
       this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, returnedQuestion);
+    } catch (java.util.NoSuchElementException ex) {
+      this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, id);
     } catch (NullPointerException ex) {
       this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, id);
     } catch (java.lang.IllegalArgumentException ex) {
       this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, id);
+    }
+
+    return this.dbResponse;
+  }
+
+  @Override
+  public DbResponse getQuestionByTitle(String title) {
+    try {
+      this.filters.clear();
+      this.filters.put("title", title);
+      Document doc = this.client.find(this.filters).iterator().next();
+
+      Question returnedQuestion = new Question();
+      Object idObj = doc.get("_id");
+      String idStr = (String) idObj.toString();
+      returnedQuestion.setId(idStr);
+      returnedQuestion.setTitle(doc.getString("title"));
+      returnedQuestion.setContent(doc.getString("content"));
+      returnedQuestion.setUserAlias(doc.getString("alias"));
+      returnedQuestion.setTimeStamp(doc.getLong("time"));
+
+      this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, returnedQuestion);
+    } catch (java.util.NoSuchElementException ex) {
+      this.dbResponse = new DbResponse(DbOperationStatus.FALIURE, title);
+    } catch (NullPointerException ex) {
+      this.dbResponse = new DbResponse(DbOperationStatus.FALIURE, title);
+    } catch (java.lang.IllegalArgumentException ex) {
+      this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, title);
     }
 
     return this.dbResponse;
