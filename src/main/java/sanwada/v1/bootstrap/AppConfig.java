@@ -11,6 +11,7 @@ import javax.ws.rs.core.Application;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.servlet.ServletProperties;
 
+import sanwada.v1.rest.AnswerResource;
 import sanwada.v1.rest.QuestionResource;
 
 @ApplicationPath(value = "/v1")
@@ -22,6 +23,7 @@ public class AppConfig extends Application {
     final Set<Class<?>> classes = new HashSet<>();
     // Register root resource classes
     classes.add(QuestionResource.class);
+    classes.add(AnswerResource.class);
 
     // Register jersey application event listener
     classes.add(SanwadaEventListener.class);

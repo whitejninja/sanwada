@@ -22,6 +22,7 @@ public class MongoDataSourceClient implements DataSourceClient<Document> {
   private static MongoClient mClient;
 
   public MongoDataSourceClient() {
+    this("localhost", 27017);
   }
 
   public MongoDataSourceClient(String host, int port) {
