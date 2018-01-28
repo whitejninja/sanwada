@@ -23,22 +23,9 @@ public class AnswerResourceTest {
     answerResource=new AnswerResource();
   }
   
-  
-  @Test
-  public void createAnswer_questionIdExist_Not400() {
-    Answer answer=mock(Answer.class);
-    AnswerDataService dataService = mock(AnswerDataService.class);
-    
-    when(answer.getId()).thenReturn("id");
-    when(dataService.isQuestionIdValid(answer.getQuestionId())).thenReturn(true);
-    when(dataService.createQuestion(answer)).thenReturn(new DbResponse(DbOperationStatus.SUCCESS, answer));
-    
-    answerResource.answerDataService = dataService;
-    
-    Response res=answerResource.createAnswer(answer);
-    
-    assertNotEquals(res.getStatus(), 400);
-  }
+  /*
+   * Start of createAnswer() test cases
+   */
   
   @Test
   public void createAnswer_questionIdNotExist_400() {
@@ -46,7 +33,7 @@ public class AnswerResourceTest {
     AnswerDataService dataService = mock(AnswerDataService.class);
     
     when(answer.getId()).thenReturn("id");
-    when(dataService.isQuestionIdValid(answer.getQuestionId())).thenReturn(false);
+    when(dataService.createAnswer(answer)).thenReturn(new DbResponse(DbOperationStatus.NO_SUCH_RECORD, answer));
     
     answerResource.answerDataService = dataService;
     
@@ -61,8 +48,7 @@ public class AnswerResourceTest {
     AnswerDataService dataService=mock(AnswerDataService.class);
     
     when(answer.getId()).thenReturn("id");
-    when(dataService.isQuestionIdValid(answer.getQuestionId())).thenReturn(true);
-    when(dataService.createQuestion(answer)).thenReturn(new DbResponse(DbOperationStatus.SUCCESS, answer));
+    when(dataService.createAnswer(answer)).thenReturn(new DbResponse(DbOperationStatus.SUCCESS, answer));
     
     answerResource.answerDataService=dataService;
     
@@ -77,12 +63,61 @@ public class AnswerResourceTest {
     AnswerDataService dataService=mock(AnswerDataService.class);
 
     when(answer.getId()).thenReturn("id");
-    when(dataService.isQuestionIdValid(answer.getQuestionId())).thenReturn(true);
-    when(dataService.createQuestion(answer)).thenReturn(new DbResponse(DbOperationStatus.FALIURE, answer));
+    when(dataService.createAnswer(answer)).thenReturn(new DbResponse(DbOperationStatus.FALIURE, answer));
     
     answerResource.answerDataService=dataService;
     
     Response res=answerResource.createAnswer(answer);
+    
+    assertEquals(res.getStatus(), 500);
+  }
+  
+  /*
+   * End of createAnswer() test cases
+   */
+  
+  /*
+   * Start of getAnswer() test cases
+   */
+  
+  @Test
+  public void getAnswer_answerIdExist_200() {
+    Answer answer=mock(Answer.class);
+    AnswerDataService dataService=mock(AnswerDataService.class);
+    
+    when(dataService.getAnswer("id")).thenReturn(new DbResponse(DbOperationStatus.SUCCESS, answer));
+    
+    answerResource.answerDataService=dataService;
+    
+    Response res=answerResource.getAnswer("id");
+    
+    assertEquals(res.getStatus(), 200);
+  }
+  
+  @Test
+  public void getAnswer_answerIdNotExist_404() {
+    Answer answer=mock(Answer.class);
+    AnswerDataService dataService=mock(AnswerDataService.class);
+    
+    when(dataService.getAnswer("id")).thenReturn(new DbResponse(DbOperationStatus.NO_SUCH_RECORD, answer));
+    
+    answerResource.answerDataService=dataService;
+    
+    Response res=answerResource.getAnswer("id");
+    
+    assertEquals(res.getStatus(), 404);
+  }
+  
+  @Test
+  public void getAnswer_failure_500() {
+    Answer answer=mock(Answer.class);
+    AnswerDataService dataService=mock(AnswerDataService.class);
+    
+    when(dataService.getAnswer("id")).thenReturn(new DbResponse(DbOperationStatus.FALIURE, answer));
+    
+    answerResource.answerDataService=dataService;
+    
+    Response res=answerResource.getAnswer("id");
     
     assertEquals(res.getStatus(), 500);
   }

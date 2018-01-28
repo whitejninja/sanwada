@@ -5,12 +5,12 @@ import sanwada.v1.entity.DbResponse;
 
 public class AnswerDataService {
 
-  public boolean isQuestionIdValid(String id) {
+  public DbResponse createAnswer(Answer ans) {
     // TODO Auto-generated method stub
-    return false;
+    return null;
   }
 
-  public DbResponse createQuestion(Answer ans) {
+  public DbResponse getAnswer(String id) {
     // TODO Auto-generated method stub
     return null;
   }
