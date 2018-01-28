@@ -33,7 +33,7 @@ public class QuestionResource {
     if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
 
       return Response.status(201).header("location", "question/create")
-              .entity(dbResponse.getQuestion()).build();
+              .entity(dbResponse.getEntity()).build();
 
     } else if (dbResponse.getStatus().equals(DbOperationStatus.DUPLICATE_ENTRY)) {
 
@@ -56,7 +56,7 @@ public class QuestionResource {
     if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
 
       return Response.ok().header("location", "question/update/" + id)
-              .entity(dbResponse.getQuestion())
+              .entity(dbResponse.getEntity())
               .build();
 
     } else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
@@ -89,7 +89,7 @@ public class QuestionResource {
     }
     if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
 
-      return Response.ok(dbResponse.getQuestion()).header("location", "question/" + id).build();
+      return Response.ok(dbResponse.getEntity()).header("location", "question/" + id).build();
 
     } else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
 
@@ -109,8 +109,8 @@ public class QuestionResource {
 
     if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
 
-      return Response.ok(dbResponse.getQuestion()).header("location", "account/deleted")
-              .entity(dbResponse.getQuestion()).build();
+      return Response.ok(dbResponse.getEntity()).header("location", "account/deleted")
+              .entity(dbResponse.getEntity()).build();
 
     } else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
 

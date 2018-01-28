@@ -20,12 +20,13 @@ public class DbResponse {
     this.status = status;
   }
 
-  public Object getQuestion() {
+  public Object getEntity() {
     return responseObj;
   }
 
   public void setNewQuestion(Question question) {
     this.responseObj = question;
   }
+
 
 }
