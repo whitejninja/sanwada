@@ -14,4 +14,14 @@ public class AnswerDataService {
     // TODO Auto-generated method stub
     return null;
   }
+
+  public DbResponse updateAnswer(String id, Answer answer) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public DbResponse deleteAnswer(String id) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 }

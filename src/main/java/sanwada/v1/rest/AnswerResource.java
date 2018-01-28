@@ -2,9 +2,11 @@ package sanwada.v1.rest;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -47,6 +49,38 @@ public class AnswerResource {
         return Response.status(200).entity(res.getEntity()).build();
       case NO_SUCH_RECORD:
         return Response.status(404).build();
+      default:
+        return Response.status(500).entity("Error occured").build();
+    }
+  }
+
+  @PUT
+  @Path(value = "")
+  @Consumes(value = MediaType.APPLICATION_JSON)
+  @Produces(value = MediaType.APPLICATION_JSON)
+  public Response updateAnswer(String id, Answer answer) {
+    DbResponse res = answerDataService.updateAnswer(id, answer);
+
+    switch (res.getStatus()) {
+      case SUCCESS:
+        return Response.status(200).entity(res.getEntity()).build();
+      case NO_SUCH_RECORD:
+        return Response.status(400).entity(res.getEntity()).build();
+      default:
+        return Response.status(500).entity("Error occured").build();
+    }
+  }
+
+  @DELETE
+  @Path(value = "")
+  public Response deleteAnswer(String id) {
+    DbResponse res = answerDataService.deleteAnswer(id);
+
+    switch (res.getStatus()) {
+      case SUCCESS:
+        return Response.status(200).entity(res.getEntity()).build();
+      case NO_SUCH_RECORD:
+        return Response.status(404).entity(res.getEntity()).build();
       default:
         return Response.status(500).entity("Error occured").build();
     }
