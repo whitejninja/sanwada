@@ -15,11 +15,14 @@ import com.mongodb.WriteConcern;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 
+import sanwada.v1.entity.DatabaseCollection;
+
 public class MongoDataSourceClient implements DataSourceClient<Document> {
 
   private String host;
   private int port;
   private static MongoClient mClient;
+  private String collection;
 
   public MongoDataSourceClient() {
     this("localhost", 27017);
@@ -28,6 +31,7 @@ public class MongoDataSourceClient implements DataSourceClient<Document> {
   public MongoDataSourceClient(String host, int port) {
     this.host = host;
     this.port = port;
+    this.collection="question_collection";
     initializeConnection();
   }
 
@@ -55,10 +59,20 @@ public class MongoDataSourceClient implements DataSourceClient<Document> {
     return mClient;
   }
 
-  public MongoCollection<Document> getCollection() {
-
+  public void setCollection(DatabaseCollection collection) {
+    switch (collection) {
+      case ANSWER_COLLECTION:
+        this.collection="answer_collection";
+        break;
+      case QUESTION_COLLECTION:
+        this.collection="question_collection";
+        break;
+    }
+  }
+  
+  public MongoCollection<Document> getCollection() throws NullPointerException {
     return MongoDataSourceClient.getClient().getDatabase("DiscussDatabase")
-            .getCollection("sanwadaCollection");
+            .getCollection(this.collection);
   }
 
   @Override

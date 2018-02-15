@@ -32,7 +32,7 @@ public class AnswerResource {
       case SUCCESS:
         return Response.status(201).entity(res.getEntity()).build();
       case NO_SUCH_RECORD:
-        return Response.status(400).header("location", "answer/create").build();
+        return Response.status(404).header("location", "answer/create").build();
       default:
         return Response.status(500).entity("Error occured").build();
     }

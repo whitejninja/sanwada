@@ -5,8 +5,10 @@ import java.util.LinkedHashMap;
 import javax.inject.Inject;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import sanwada.v1.entity.Answer;
+import sanwada.v1.entity.DatabaseCollection;
 import sanwada.v1.entity.DbResponse;
 
 public class AnswerDataService {
@@ -17,18 +19,36 @@ public class AnswerDataService {
 
   public DbResponse createAnswer(Answer ans) {
     try {
+      client.setCollection(DatabaseCollection.QUESTION_COLLECTION);
       Document document = new Document("questionId", ans.getQuestionId())
               .append("content", ans.getContent());
 
-      filters.put("questionId", ans.getQuestionId());
+      ObjectId id=new ObjectId(ans.getQuestionId());
+      filters.put("_id", id);
 
       // check whether questionId exist
       Boolean questionIdAvailable = this.client.find(filters).iterator().hasNext();
 
-      if (questionIdAvailable) {
-        return new DbResponse(DbOperationStatus.SUCCESS, ans);
+      if (!questionIdAvailable) {
+        return new DbResponse(DbOperationStatus.NO_SUCH_RECORD, ans);
       }
-      return new DbResponse(DbOperationStatus.NO_SUCH_RECORD, ans);
+      
+      client.setCollection(DatabaseCollection.ANSWER_COLLECTION);
+      Long postedTime = System.currentTimeMillis();
+      document.append("time", postedTime);
+      client.insert(document);
+      
+      // Convert _id object to hexadecimal string
+      Object idObj = document.get("_id");
+      String idStr = (String) idObj.toString();
+      
+      Answer createdAnswer=new Answer();
+      createdAnswer.setId(idStr);
+      createdAnswer.setQuestionId(document.getString("content"));
+      createdAnswer.setContent(document.getString("content"));
+      createdAnswer.setTimestamp(postedTime);
+      
+      return new DbResponse(DbOperationStatus.SUCCESS, createdAnswer);
     } catch (Exception e) {
       e.printStackTrace();
       return new DbResponse(DbOperationStatus.FALIURE, null);
