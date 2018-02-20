@@ -23,7 +23,7 @@ public class AnswerDataService {
       Document document = new Document("questionId", ans.getQuestionId())
               .append("content", ans.getContent());
 
-      ObjectId id=new ObjectId(ans.getQuestionId());
+      ObjectId id = new ObjectId(ans.getQuestionId());
       filters.put("_id", id);
 
       // check whether questionId exist
@@ -32,22 +32,22 @@ public class AnswerDataService {
       if (!questionIdAvailable) {
         return new DbResponse(DbOperationStatus.NO_SUCH_RECORD, ans);
       }
-      
+
       client.setCollection(DatabaseCollection.ANSWER_COLLECTION);
       Long postedTime = System.currentTimeMillis();
       document.append("time", postedTime);
       client.insert(document);
-      
+
       // Convert _id object to hexadecimal string
       Object idObj = document.get("_id");
       String idStr = (String) idObj.toString();
-      
-      Answer createdAnswer=new Answer();
+
+      Answer createdAnswer = new Answer();
       createdAnswer.setId(idStr);
       createdAnswer.setQuestionId(document.getString("content"));
       createdAnswer.setContent(document.getString("content"));
       createdAnswer.setTimestamp(postedTime);
-      
+
       return new DbResponse(DbOperationStatus.SUCCESS, createdAnswer);
     } catch (Exception e) {
       e.printStackTrace();
@@ -56,8 +56,28 @@ public class AnswerDataService {
   }
 
   public DbResponse getAnswer(String id) {
-    // TODO Auto-generated method stub
-    return null;
+    client.setCollection(DatabaseCollection.ANSWER_COLLECTION);
+
+    ObjectId objId = new ObjectId(id);
+    filters.put("_id", objId);
+
+    Document ansDoc = this.client.find(filters).iterator().next();
+
+    Answer ans = new Answer();
+
+    Object idObj = ansDoc.get("_id");
+    String idStr = (String) idObj.toString();
+    ans.setId(idStr);
+
+    ans.setContent(ansDoc.getString("content"));
+
+    Object qidObj = ansDoc.get("questionId");
+    String qidStr = (String) qidObj.toString();
+    ans.setQuestionId(qidStr);
+
+    ans.setTimestamp(ansDoc.getLong("time"));
+
+    return new DbResponse(DbOperationStatus.SUCCESS, ans);
   }
 
   public DbResponse updateAnswer(String id, Answer answer) {

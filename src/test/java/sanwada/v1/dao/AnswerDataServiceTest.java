@@ -4,6 +4,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -26,6 +27,9 @@ public class AnswerDataServiceTest {
     answerDataService = new AnswerDataService();
   }
 
+  /*
+   * Start of test cases for createAnswer method
+   */
   @Test
   public void createAnswer_questionIdAvailable_SUCCESS() {
     Answer ans = mock(Answer.class);
@@ -38,13 +42,13 @@ public class AnswerDataServiceTest {
     when(client.find(answerDataService.filters)).thenReturn(iterable);
     when(iterable.iterator()).thenReturn(iterator);
     when(iterator.hasNext()).thenReturn(true);
-    
-    //The document passed to the client.create() should contain a _id
+
+    // The document passed to the client.create() should contain a _id
     doAnswer(new org.mockito.stubbing.Answer() {
       @Override
       public Object answer(InvocationOnMock invocation) throws Throwable {
         Object[] args = invocation.getArguments();
-        Document res= (Document) args[0];
+        Document res = (Document) args[0];
         res.append("_id", "5a0e38af8bce7d09e8436aff");
         return null; // void method, so return null
       }
@@ -98,22 +102,22 @@ public class AnswerDataServiceTest {
   @Test
   public void createAnswer_questionIdAvailable_answerIdShouldNotBeNull() {
     Answer ans = mock(Answer.class);
-    Document document=mock(Document.class);
+    Document document = mock(Document.class);
     when(ans.getQuestionId()).thenReturn("5a0e38af8bce7d09e8436aff");
 
     DataSourceClient<Document> client = mock(MongoDataSourceClient.class);
     Iterable<Document> iterable = mock(Iterable.class);
     Iterator<Document> iterator = mock(Iterator.class);
 
-    when(client.find(answerDataService.filters)).thenReturn(iterable);    
+    when(client.find(answerDataService.filters)).thenReturn(iterable);
     when(iterable.iterator()).thenReturn(iterator);
     when(iterator.hasNext()).thenReturn(true);
-    
+
     doAnswer(new org.mockito.stubbing.Answer() {
       @Override
       public Object answer(InvocationOnMock invocation) throws Throwable {
         Object[] args = invocation.getArguments();
-        Document res= (Document) args[0];
+        Document res = (Document) args[0];
         res.append("_id", "5a0e38af8bce7d09e8436aff");
         return null; // void method, so return null
       }
@@ -122,7 +126,38 @@ public class AnswerDataServiceTest {
 
     DbResponse dbResponse = answerDataService.createAnswer(ans);
     assertEquals(dbResponse.getStatus(), DbOperationStatus.SUCCESS);
-    assertNotNull(dbResponse.getEntity());
     assertNotNull(((Answer) dbResponse.getEntity()).getId());
+  }
+  /*
+   * End of test cases for createAnswer
+   */
+
+  /*
+   * Start of test cases for getAnswer method
+   */
+  @Test
+  public void getAnswer_answerIdAvailable_successWithAnswerObject() {
+    Answer answer = mock(Answer.class);
+    when(answer.getId()).thenReturn("5a0e38af8bce7d09e8436aff");
+
+    DataSourceClient<Document> client = mock(MongoDataSourceClient.class);
+    Iterable<Document> iterable = mock(Iterable.class);
+    Iterator<Document> iterator = mock(Iterator.class);
+
+    Document doc = new Document().append("_id", answer.getId()).append("content", "content")
+            .append("questionId", "5a0e38af8bce7d09e8436aff").append("time", 1L);
+    when(iterator.next()).thenReturn(doc);
+    when(iterable.iterator()).thenReturn(iterator);
+    when(client.find(any(LinkedHashMap.class))).thenReturn(iterable);
+
+    answerDataService.client = client;
+
+    DbResponse dbResponse = answerDataService.getAnswer("5a0e38af8bce7d09e8436aff");
+    assertEquals(dbResponse.getStatus(), DbOperationStatus.SUCCESS);
+    assertEquals(dbResponse.getEntity().getClass(), Answer.class);
+    assertNotNull(((Answer) dbResponse.getEntity()).getId());
+    assertNotNull(((Answer) dbResponse.getEntity()).getContent());
+    assertNotNull(((Answer) dbResponse.getEntity()).getQuestionId());
+    assertNotNull(((Answer) dbResponse.getEntity()).getTimestamp());
   }
 }

@@ -13,10 +13,11 @@ import sanwada.v1.entity.Question;
 
 public class QuestionDataService implements QuestionDAO {
 
-  @Inject DataSourceClient<Document> client;
+  @Inject
+  DataSourceClient<Document> client;
   private LinkedHashMap<String, Object> filters;
   private DbResponse dbResponse;
-  
+
   public QuestionDataService() {
     try {
       filters = new LinkedHashMap<String, Object>();
@@ -29,7 +30,7 @@ public class QuestionDataService implements QuestionDAO {
   public DbResponse addQuestion(Question question) {
     try {
       client.setCollection(DatabaseCollection.QUESTION_COLLECTION);
-      
+
       Document document = new Document("alias", question.getUserAlias())
               .append("title", question.getTitle())
               .append("content", question.getContent());
@@ -76,7 +77,7 @@ public class QuestionDataService implements QuestionDAO {
   public DbResponse getQuestion(String id) {
     try {
       client.setCollection(DatabaseCollection.QUESTION_COLLECTION);
-    
+
       ObjectId objId = new ObjectId(id);
 
       this.filters.clear();
@@ -106,7 +107,7 @@ public class QuestionDataService implements QuestionDAO {
   public DbResponse getQuestionByTitle(String title) {
     try {
       client.setCollection(DatabaseCollection.QUESTION_COLLECTION);
-      
+
       this.filters.clear();
       this.filters.put("title", title);
       Document doc = this.client.find(this.filters).iterator().next();
@@ -138,7 +139,7 @@ public class QuestionDataService implements QuestionDAO {
     ObjectId objectId = new ObjectId(id);
     try {
       client.setCollection(DatabaseCollection.QUESTION_COLLECTION);
-      
+
       Document newDocument = new Document("title", question.getTitle()).append("content",
               question.getContent());
 
@@ -170,7 +171,7 @@ public class QuestionDataService implements QuestionDAO {
   public DbResponse removeQuestion(String id) {
     try {
       client.setCollection(DatabaseCollection.QUESTION_COLLECTION);
-      
+
       ObjectId objId = new ObjectId(id);
 
       filters.clear();

@@ -11,19 +11,19 @@ import sanwada.v1.entity.DatabaseCollection;
 public interface DataSourceClient<O> {
 
   /**
-   * Initialize a connection to the datasource
+   * Initialize a connection to the data source
    */
   void initializeConnection();
 
   /**
-   * @return object should represent a connection to a datasource
+   * @return object should represent a connection to a data source
    */
   static Object getClient() {
     return new Object();
   }
 
   /**
-   * @return object represent the database in the datasource which the
+   * @return object represent the database in the data source which the
    *         DataSourceClient interacts with
    */
   Object getDatabase();
@@ -48,7 +48,7 @@ public interface DataSourceClient<O> {
   Iterable<O> find(LinkedHashMap<String, Object> filters);
 
   /**
-   * Inserts object to datasource
+   * Inserts object to data source
    * 
    * @param object
    */
@@ -63,5 +63,11 @@ public interface DataSourceClient<O> {
    */
   boolean update(LinkedHashMap<String, Object> filters, Object newObject);
 
+  /**
+   * Delete objects that match filter with provided values
+   * 
+   * @param filters
+   * @return
+   */
   boolean delete(LinkedHashMap<String, Object> filters);
 }
