@@ -5,6 +5,7 @@ import static org.testng.Assert.assertNotNull;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.NoSuchElementException;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -147,6 +148,7 @@ public class AnswerDataServiceTest {
     Document doc = new Document().append("_id", answer.getId()).append("content", "content")
             .append("questionId", "5a0e38af8bce7d09e8436aff").append("time", 1L);
     when(iterator.next()).thenReturn(doc);
+    when(iterator.hasNext()).thenReturn(true);
     when(iterable.iterator()).thenReturn(iterator);
     when(client.find(any(LinkedHashMap.class))).thenReturn(iterable);
 
@@ -159,5 +161,22 @@ public class AnswerDataServiceTest {
     assertNotNull(((Answer) dbResponse.getEntity()).getContent());
     assertNotNull(((Answer) dbResponse.getEntity()).getQuestionId());
     assertNotNull(((Answer) dbResponse.getEntity()).getTimestamp());
+  }
+
+  @Test
+  public void getAnswer_AnswerIdNotAvailable_NO_SUCH_RECORD_FOUND() {
+    DataSourceClient<Document> client = mock(MongoDataSourceClient.class);
+    Iterable<Document> iterable = mock(Iterable.class);
+    Iterator<Document> iterator = mock(Iterator.class);
+
+    when(iterator.next()).thenThrow(NoSuchElementException.class);
+    when(iterator.hasNext()).thenReturn(false);
+    when(iterable.iterator()).thenReturn(iterator);
+    when(client.find(any(LinkedHashMap.class))).thenReturn(iterable);
+
+    answerDataService.client = client;
+
+    DbResponse dbResponse = answerDataService.getAnswer("5a0e38af8bce7d09e8436aff");
+    assertEquals(dbResponse.getStatus(), DbOperationStatus.NO_SUCH_RECORD);
   }
 }

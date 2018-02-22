@@ -27,10 +27,12 @@ public interface DataSourceClient<O> {
    *         DataSourceClient interacts with
    */
   Object getDatabase();
-  
+
   /**
    * Set the name of collection client should work on
-   * @param collection Collection name
+   * 
+   * @param collection
+   *          Collection name
    */
   void setCollection(DatabaseCollection collection);
 

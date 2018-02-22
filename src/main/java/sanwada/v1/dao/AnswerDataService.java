@@ -61,23 +61,27 @@ public class AnswerDataService {
     ObjectId objId = new ObjectId(id);
     filters.put("_id", objId);
 
-    Document ansDoc = this.client.find(filters).iterator().next();
+    if (this.client.find(filters).iterator().hasNext()) {
+      Document ansDoc = this.client.find(filters).iterator().next();
 
-    Answer ans = new Answer();
+      Answer ans = new Answer();
 
-    Object idObj = ansDoc.get("_id");
-    String idStr = (String) idObj.toString();
-    ans.setId(idStr);
+      Object idObj = ansDoc.get("_id");
+      String idStr = (String) idObj.toString();
+      ans.setId(idStr);
 
-    ans.setContent(ansDoc.getString("content"));
+      ans.setContent(ansDoc.getString("content"));
 
-    Object qidObj = ansDoc.get("questionId");
-    String qidStr = (String) qidObj.toString();
-    ans.setQuestionId(qidStr);
+      Object qidObj = ansDoc.get("questionId");
+      String qidStr = (String) qidObj.toString();
+      ans.setQuestionId(qidStr);
 
-    ans.setTimestamp(ansDoc.getLong("time"));
+      ans.setTimestamp(ansDoc.getLong("time"));
 
-    return new DbResponse(DbOperationStatus.SUCCESS, ans);
+      return new DbResponse(DbOperationStatus.SUCCESS, ans);
+    } else {
+      return new DbResponse(DbOperationStatus.NO_SUCH_RECORD, null);
+    }
   }
 
   public DbResponse updateAnswer(String id, Answer answer) {
