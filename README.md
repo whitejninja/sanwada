@@ -22,7 +22,9 @@ Sanwada is [sinhala](https://en.wikipedia.org/wiki/Sinhalese_language) term (ස
 Although any .war file can be run in a Java containered appliction server, It is recommended to deploy **Sanawada** with glassfish application server.
 
 Start application server
+
     $ $GLASSFISH_INSTALL_DIR/bin/asadmin start-domain
 
 deploy sanawada.war
+
     $ $GLASSFISH_INSTALL_DIR/bin/asadmin deploy build/libs/sanwada.war
