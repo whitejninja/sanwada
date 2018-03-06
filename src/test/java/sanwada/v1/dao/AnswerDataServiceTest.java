@@ -9,6 +9,8 @@ import java.util.NoSuchElementException;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.mockito.ArgumentCaptor;
+import org.mockito.internal.matchers.Any;
 import org.mockito.invocation.InvocationOnMock;
 
 import static org.mockito.Mockito.*;
@@ -44,7 +46,6 @@ public class AnswerDataServiceTest {
     when(iterable.iterator()).thenReturn(iterator);
     when(iterator.hasNext()).thenReturn(true);
 
-    // The document passed to the client.create() should contain a _id
     doAnswer(new org.mockito.stubbing.Answer() {
       @Override
       public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -54,6 +55,7 @@ public class AnswerDataServiceTest {
         return null; // void method, so return null
       }
     }).when(client).insert(any(Document.class));
+
     answerDataService.client = client;
 
     DbResponse res = answerDataService.createAnswer(ans);
@@ -115,6 +117,7 @@ public class AnswerDataServiceTest {
     when(iterator.hasNext()).thenReturn(true);
 
     doAnswer(new org.mockito.stubbing.Answer() {
+
       @Override
       public Object answer(InvocationOnMock invocation) throws Throwable {
         Object[] args = invocation.getArguments();
@@ -123,6 +126,7 @@ public class AnswerDataServiceTest {
         return null; // void method, so return null
       }
     }).when(client).insert(any(Document.class));
+
     answerDataService.client = client;
 
     DbResponse dbResponse = answerDataService.createAnswer(ans);
@@ -169,7 +173,7 @@ public class AnswerDataServiceTest {
     Iterable<Document> iterable = mock(Iterable.class);
     Iterator<Document> iterator = mock(Iterator.class);
 
-    when(iterator.next()).thenThrow(NoSuchElementException.class);
+    when(iterator.next()).thenThrow(new RuntimeException());
     when(iterator.hasNext()).thenReturn(false);
     when(iterable.iterator()).thenReturn(iterator);
     when(client.find(any(LinkedHashMap.class))).thenReturn(iterable);

@@ -75,7 +75,6 @@ public class QuestionResource {
   }
 
   @GET
-  @Path(value = "")
   @Consumes(value = MediaType.APPLICATION_JSON)
   @Produces(value = MediaType.APPLICATION_JSON)
   public Response getQuestion(@QueryParam("id") String id, @QueryParam("title") String title) {

@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -22,7 +23,6 @@ public class AnswerResource {
   AnswerDataService answerDataService;
 
   @POST
-  @Path(value = "")
   @Consumes(value = MediaType.APPLICATION_JSON)
   @Produces(value = MediaType.APPLICATION_JSON)
   public Response createAnswer(Answer answer) {
@@ -39,9 +39,8 @@ public class AnswerResource {
   }
 
   @GET
-  @Path(value = "")
   @Produces(value = MediaType.APPLICATION_JSON)
-  public Response getAnswer(String id) {
+  public Response getAnswer(@PathParam("id") String id) {
     DbResponse res = answerDataService.getAnswer(id);
 
     switch (res.getStatus()) {
@@ -55,10 +54,9 @@ public class AnswerResource {
   }
 
   @PUT
-  @Path(value = "")
   @Consumes(value = MediaType.APPLICATION_JSON)
   @Produces(value = MediaType.APPLICATION_JSON)
-  public Response updateAnswer(String id, Answer answer) {
+  public Response updateAnswer(@PathParam("id") String id, Answer answer) {
     DbResponse res = answerDataService.updateAnswer(id, answer);
 
     switch (res.getStatus()) {
@@ -72,7 +70,6 @@ public class AnswerResource {
   }
 
   @DELETE
-  @Path(value = "")
   public Response deleteAnswer(String id) {
     DbResponse res = answerDataService.deleteAnswer(id);
 

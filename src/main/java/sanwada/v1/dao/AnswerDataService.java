@@ -20,9 +20,6 @@ public class AnswerDataService {
   public DbResponse createAnswer(Answer ans) {
     try {
       client.setCollection(DatabaseCollection.QUESTION_COLLECTION);
-      Document document = new Document("questionId", ans.getQuestionId())
-              .append("content", ans.getContent());
-
       ObjectId id = new ObjectId(ans.getQuestionId());
       filters.put("_id", id);
 
@@ -33,6 +30,9 @@ public class AnswerDataService {
         return new DbResponse(DbOperationStatus.NO_SUCH_RECORD, ans);
       }
 
+      Document document = new Document("questionId", ans.getQuestionId())
+              .append("content", ans.getContent());
+      
       client.setCollection(DatabaseCollection.ANSWER_COLLECTION);
       Long postedTime = System.currentTimeMillis();
       document.append("time", postedTime);
