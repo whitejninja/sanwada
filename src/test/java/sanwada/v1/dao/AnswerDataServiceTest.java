@@ -5,12 +5,9 @@ import static org.testng.Assert.assertNotNull;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.NoSuchElementException;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.mockito.ArgumentCaptor;
-import org.mockito.internal.matchers.Any;
 import org.mockito.invocation.InvocationOnMock;
 
 import static org.mockito.Mockito.*;
@@ -182,5 +179,40 @@ public class AnswerDataServiceTest {
 
     DbResponse dbResponse = answerDataService.getAnswer("5a0e38af8bce7d09e8436aff");
     assertEquals(dbResponse.getStatus(), DbOperationStatus.NO_SUCH_RECORD);
+  }
+
+  /*
+   * Start of test cases for isQuestionIdAvailable method
+   */
+  @Test
+  public void isQustionIdAvailable_questionIdAvailable_true() {
+    DataSourceClient<Document> client = mock(MongoDataSourceClient.class);
+    Iterable<Document> iterable = mock(Iterable.class);
+    Iterator<Document> iterator = mock(Iterator.class);
+
+    when(client.find(answerDataService.filters)).thenReturn(iterable);
+    when(iterable.iterator()).thenReturn(iterator);
+    when(iterator.hasNext()).thenReturn(true);
+
+    answerDataService.client = client;
+
+    boolean response = answerDataService.isQuestionIdAvailable("5a0e38af8bce7d09e8436aff");
+    assertEquals(response, true);
+  }
+
+  @Test
+  public void isQuestionIdAvailable_questionIdNotAvailable_false() {
+    DataSourceClient<Document> client = mock(MongoDataSourceClient.class);
+    Iterable<Document> iterable = mock(Iterable.class);
+    Iterator<Document> iterator = mock(Iterator.class);
+
+    when(client.find(answerDataService.filters)).thenReturn(iterable);
+    when(iterable.iterator()).thenReturn(iterator);
+    when(iterator.hasNext()).thenReturn(false);
+
+    answerDataService.client = client;
+
+    boolean response = answerDataService.isQuestionIdAvailable("5a0e38af8bce7d09e8436aff");
+    assertEquals(response, false);
   }
 }

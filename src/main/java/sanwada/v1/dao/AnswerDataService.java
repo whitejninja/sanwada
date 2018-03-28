@@ -86,7 +86,7 @@ public class AnswerDataService {
 
   public DbResponse updateAnswer(String id, Answer answer) {
     // TODO Auto-generated method stub
-    return null;
+    return new DbResponse(DbOperationStatus.SUCCESS, answer);
   }
 
   public DbResponse deleteAnswer(String id) {
@@ -95,7 +95,10 @@ public class AnswerDataService {
   }
 
   public boolean isQuestionIdAvailable(String id) {
-    // TODO Auto-generated method stub
-    return true;
+    client.setCollection(DatabaseCollection.QUESTION_COLLECTION);
+    ObjectId objId = new ObjectId(id);
+    filters.put("_id", objId);
+    
+    return this.client.find(filters).iterator().hasNext();
   }
 }
