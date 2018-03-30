@@ -215,4 +215,45 @@ public class AnswerDataServiceTest {
     boolean response = answerDataService.isQuestionIdAvailable("5a0e38af8bce7d09e8436aff");
     assertEquals(response, false);
   }
+  
+  /*
+   * Start of test cases for updateAnswer
+   */
+  @Test
+  public void updateAnswer_idNotAvailable_NO_SUCH_RECORD() {
+    Answer answer=mock(Answer.class);
+    
+    DataSourceClient<Document> client = mock(MongoDataSourceClient.class);
+    Iterable<Document> iterable = mock(Iterable.class);
+    Iterator<Document> iterator = mock(Iterator.class);
+
+    when(iterator.next()).thenThrow(new RuntimeException());
+    when(iterator.hasNext()).thenReturn(false);
+    when(iterable.iterator()).thenReturn(iterator);
+    when(client.find(any(LinkedHashMap.class))).thenReturn(iterable);
+
+    answerDataService.client = client;
+
+    DbResponse dbResponse = answerDataService.updateAnswer("5a0e38af8bce7d09e8436aff", answer);
+    assertEquals(dbResponse.getStatus(), DbOperationStatus.NO_SUCH_RECORD);
+  }
+  
+  @Test
+  public void updateAnswer_idAvailable_SUCCESS() {
+Answer answer=mock(Answer.class);
+    
+    DataSourceClient<Document> client = mock(MongoDataSourceClient.class);
+    Iterable<Document> iterable = mock(Iterable.class);
+    Iterator<Document> iterator = mock(Iterator.class);
+
+    when(iterator.next()).thenThrow(new RuntimeException());
+    when(iterator.hasNext()).thenReturn(true);
+    when(iterable.iterator()).thenReturn(iterator);
+    when(client.find(any(LinkedHashMap.class))).thenReturn(iterable);
+
+    answerDataService.client = client;
+
+    DbResponse dbResponse = answerDataService.updateAnswer("5a0e38af8bce7d09e8436aff", answer);
+    assertEquals(dbResponse.getStatus(), DbOperationStatus.SUCCESS);
+  }
 }

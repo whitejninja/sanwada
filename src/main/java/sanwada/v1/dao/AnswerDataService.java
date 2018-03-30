@@ -85,8 +85,15 @@ public class AnswerDataService {
   }
 
   public DbResponse updateAnswer(String id, Answer answer) {
-    // TODO Auto-generated method stub
-    return new DbResponse(DbOperationStatus.SUCCESS, answer);
+    client.setCollection(DatabaseCollection.ANSWER_COLLECTION);
+
+    ObjectId objId = new ObjectId(id);
+    filters.put("_id", objId);
+
+    if (this.client.find(filters).iterator().hasNext()) {
+      return new DbResponse(DbOperationStatus.SUCCESS, answer);
+    }
+    return new DbResponse(DbOperationStatus.NO_SUCH_RECORD, answer);
   }
 
   public DbResponse deleteAnswer(String id) {
