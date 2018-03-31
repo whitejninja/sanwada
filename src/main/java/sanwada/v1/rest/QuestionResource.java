@@ -13,11 +13,16 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ApiResponse;
 import sanwada.v1.dao.DbOperationStatus;
 import sanwada.v1.entity.DbResponse;
 import sanwada.v1.dao.QuestionDataService;
 import sanwada.v1.entity.Question;
 
+@Api(value = "REST representation of a question resource")
 @Path(value = "question")
 public class QuestionResource {
   @Inject
@@ -27,6 +32,12 @@ public class QuestionResource {
   @Path(value = "create")
   @Consumes(value = MediaType.APPLICATION_JSON)
   @Produces(value = MediaType.APPLICATION_JSON)
+  @ApiOperation(value="Creates a question")
+  @ApiResponses(value = { 
+      @ApiResponse(code = 201, message = "Question created", response=Question.class),
+      @ApiResponse(code = 409, message = "Title already exist"),
+      @ApiResponse(code = 500, message = "Internal server error") 
+      })
   public Response createQuestion(Question question) {
     DbResponse dbResponse = questionDataService.addQuestion(question);
 
