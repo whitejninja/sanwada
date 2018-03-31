@@ -31,7 +31,7 @@ public class AnswerResource{
     switch (res.getStatus()) {
       case SUCCESS:
         return Response.status(201)
-            .entity(res.getEntity())
+            .entity(res.getResult())
             .build();
       case NO_SUCH_RECORD:
         return Response.status(400)
@@ -52,7 +52,7 @@ public class AnswerResource{
     switch (res.getStatus()) {
       case SUCCESS:
         return Response.status(200)
-            .entity(res.getEntity())
+            .entity(res.getResult())
             .build();
       case NO_SUCH_RECORD:
         return Response.status(404)
@@ -73,11 +73,11 @@ public class AnswerResource{
     switch (res.getStatus()) {
       case SUCCESS:
         return Response.status(200)
-            .entity(res.getEntity())
+            .entity(res.getResult())
             .build();
       case NO_SUCH_RECORD:
         return Response.status(400)
-            .entity(res.getEntity())
+            .entity(res.getResult())
             .build();
       default:
         return Response.status(500)
@@ -93,11 +93,11 @@ public class AnswerResource{
     switch (res.getStatus()) {
       case SUCCESS:
         return Response.status(200)
-            .entity(res.getEntity())
+            .entity(res.getResult())
             .build();
       case NO_SUCH_RECORD:
         return Response.status(404)
-            .entity(res.getEntity())
+            .entity(res.getResult())
             .build();
       default:
         return Response.status(500)

@@ -5,11 +5,11 @@ import sanwada.v1.dao.DbOperationStatus;
 public class DbResponse{
 
   private DbOperationStatus status;
-  private Object responseObj;
+  private Object result;
 
-  public DbResponse(DbOperationStatus status, Object responseObj) {
+  public DbResponse(DbOperationStatus status, Object result) {
     this.status = status;
-    this.responseObj = responseObj;
+    this.result = result;
   }
 
   public DbOperationStatus getStatus() {
@@ -20,12 +20,12 @@ public class DbResponse{
     this.status = status;
   }
 
-  public Object getEntity() {
-    return responseObj;
+  public Object getResult() {
+    return result;
   }
 
-  public void setNewQuestion(Question question) {
-    this.responseObj = question;
+  public void setResult(Object result) {
+    this.result = result;
   }
 
 }

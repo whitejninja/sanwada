@@ -45,14 +45,12 @@ public class QuestionResource{
     if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
       return Response.status(201)
           .header("location", "question/create")
-          .entity(dbResponse.getEntity()).build();
+          .entity(dbResponse.getResult()).build();
     } else if (dbResponse.getStatus().equals(DbOperationStatus.DUPLICATE_ENTRY)) {
       return Response.status(409)
-          .header("location", "question/create")
           .build();
     } else {
       return Response.status(500)
-          .header("location", "question/create")
           .build();
     }
   }
@@ -67,7 +65,7 @@ public class QuestionResource{
     if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
       return Response.ok()
           .header("location", "question/update/" + id)
-          .entity(dbResponse.getEntity())
+          .entity(dbResponse.getResult())
           .build();
     } else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
       return Response.status(400)
@@ -101,7 +99,7 @@ public class QuestionResource{
     }
 
     if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
-      return Response.ok(dbResponse.getEntity())
+      return Response.ok(dbResponse.getResult())
           .header("location", "question/" + id)
           .build();
     } else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
@@ -121,9 +119,9 @@ public class QuestionResource{
     DbResponse dbResponse = questionDataService.removeQuestion(id);
 
     if (dbResponse.getStatus().equals(DbOperationStatus.SUCCESS)) {
-      return Response.ok(dbResponse.getEntity())
+      return Response.ok(dbResponse.getResult())
           .header("location", "account/deleted")
-          .entity(dbResponse.getEntity())
+          .entity(dbResponse.getResult())
           .build();
     } else if (dbResponse.getStatus().equals(DbOperationStatus.NO_SUCH_RECORD)) {
       return Response.status(400)

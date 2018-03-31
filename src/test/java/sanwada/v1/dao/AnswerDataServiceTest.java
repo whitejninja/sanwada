@@ -76,7 +76,7 @@ public class AnswerDataServiceTest {
 
     DbResponse res = answerDataService.createAnswer(ans);
     assertEquals(res.getStatus(), DbOperationStatus.NO_SUCH_RECORD);
-    assertEquals(res.getEntity(), ans);
+    assertEquals(res.getResult(), ans);
   }
 
   @Test
@@ -128,7 +128,7 @@ public class AnswerDataServiceTest {
 
     DbResponse dbResponse = answerDataService.createAnswer(ans);
     assertEquals(dbResponse.getStatus(), DbOperationStatus.SUCCESS);
-    assertNotNull(((Answer) dbResponse.getEntity()).getId());
+    assertNotNull(((Answer) dbResponse.getResult()).getId());
   }
   /*
    * End of test cases for createAnswer
@@ -157,11 +157,11 @@ public class AnswerDataServiceTest {
 
     DbResponse dbResponse = answerDataService.getAnswer("5a0e38af8bce7d09e8436aff");
     assertEquals(dbResponse.getStatus(), DbOperationStatus.SUCCESS);
-    assertEquals(dbResponse.getEntity().getClass(), Answer.class);
-    assertNotNull(((Answer) dbResponse.getEntity()).getId());
-    assertNotNull(((Answer) dbResponse.getEntity()).getContent());
-    assertNotNull(((Answer) dbResponse.getEntity()).getQuestionId());
-    assertNotNull(((Answer) dbResponse.getEntity()).getTimestamp());
+    assertEquals(dbResponse.getResult().getClass(), Answer.class);
+    assertNotNull(((Answer) dbResponse.getResult()).getId());
+    assertNotNull(((Answer) dbResponse.getResult()).getContent());
+    assertNotNull(((Answer) dbResponse.getResult()).getQuestionId());
+    assertNotNull(((Answer) dbResponse.getResult()).getTimestamp());
   }
 
   @Test
