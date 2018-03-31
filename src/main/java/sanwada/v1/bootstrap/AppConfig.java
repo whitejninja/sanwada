@@ -1,3 +1,4 @@
+
 package sanwada.v1.bootstrap;
 
 import java.util.HashMap;
@@ -15,12 +16,12 @@ import sanwada.v1.rest.AnswerResource;
 import sanwada.v1.rest.QuestionResource;
 
 @ApplicationPath(value = "/v1")
-public class AppConfig extends Application {
+public class AppConfig extends Application{
 
   @Override
   public Set<Class<?>> getClasses() {
-
     final Set<Class<?>> classes = new HashSet<>();
+
     // Register root resource classes
     classes.add(QuestionResource.class);
     classes.add(AnswerResource.class);
@@ -32,15 +33,15 @@ public class AppConfig extends Application {
   }
 
   public Map<String, Object> getProperties() {
-      final Map<String, Object> properties = new HashMap<String, Object>();
+    final Map<String, Object> properties = new HashMap<String, Object>();
 
-      properties.put(ServletProperties.JAXRS_APPLICATION_CLASS, "sanawada.v1.bootstrap.AppConfig.class");
-      properties.put(ServerProperties.APPLICATION_NAME, "sanwada");
-      properties.put(ServerProperties.TRACING, "ALL");
-      properties.put(ServerProperties.MONITORING_ENABLED, true);
-      properties.put(ServerProperties. MONITORING_STATISTICS_ENABLED, true);
-      properties.put(ServerProperties.PROVIDER_PACKAGES, "sanwada.v1.rest");
+    properties.put(ServletProperties.JAXRS_APPLICATION_CLASS, "sanawada.v1.bootstrap.AppConfig.class");
+    properties.put(ServerProperties.APPLICATION_NAME, "sanwada");
+    properties.put(ServerProperties.TRACING, "ALL");
+    properties.put(ServerProperties.MONITORING_ENABLED, true);
+    properties.put(ServerProperties.MONITORING_STATISTICS_ENABLED, true);
+    properties.put(ServerProperties.PROVIDER_PACKAGES, "sanwada.v1.rest");
 
-      return properties;
-    }
+    return properties;
+  }
 }

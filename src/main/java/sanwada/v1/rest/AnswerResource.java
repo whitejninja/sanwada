@@ -17,7 +17,7 @@ import sanwada.v1.entity.Answer;
 import sanwada.v1.entity.DbResponse;
 
 @Path(value = "answer")
-public class AnswerResource {
+public class AnswerResource{
 
   @Inject
   AnswerDataService answerDataService;
@@ -30,11 +30,17 @@ public class AnswerResource {
 
     switch (res.getStatus()) {
       case SUCCESS:
-        return Response.status(201).entity(res.getEntity()).build();
+        return Response.status(201)
+            .entity(res.getEntity())
+            .build();
       case NO_SUCH_RECORD:
-        return Response.status(400).entity("Wrong question id").build();
+        return Response.status(400)
+            .entity("Wrong question id")
+            .build();
       default:
-        return Response.status(500).entity("Error occured").build();
+        return Response.status(500)
+            .entity("Error occured")
+            .build();
     }
   }
 
@@ -45,11 +51,16 @@ public class AnswerResource {
 
     switch (res.getStatus()) {
       case SUCCESS:
-        return Response.status(200).entity(res.getEntity()).build();
+        return Response.status(200)
+            .entity(res.getEntity())
+            .build();
       case NO_SUCH_RECORD:
-        return Response.status(404).build();
+        return Response.status(404)
+            .build();
       default:
-        return Response.status(500).entity("Error occured").build();
+        return Response.status(500)
+            .entity("Error occured")
+            .build();
     }
   }
 
@@ -61,11 +72,17 @@ public class AnswerResource {
 
     switch (res.getStatus()) {
       case SUCCESS:
-        return Response.status(200).entity(res.getEntity()).build();
+        return Response.status(200)
+            .entity(res.getEntity())
+            .build();
       case NO_SUCH_RECORD:
-        return Response.status(400).entity(res.getEntity()).build();
+        return Response.status(400)
+            .entity(res.getEntity())
+            .build();
       default:
-        return Response.status(500).entity("Error occured").build();
+        return Response.status(500)
+            .entity("Error occured")
+            .build();
     }
   }
 
@@ -75,11 +92,17 @@ public class AnswerResource {
 
     switch (res.getStatus()) {
       case SUCCESS:
-        return Response.status(200).entity(res.getEntity()).build();
+        return Response.status(200)
+            .entity(res.getEntity())
+            .build();
       case NO_SUCH_RECORD:
-        return Response.status(404).entity(res.getEntity()).build();
+        return Response.status(404)
+            .entity(res.getEntity())
+            .build();
       default:
-        return Response.status(500).entity("Error occured").build();
+        return Response.status(500)
+            .entity("Error occured")
+            .build();
     }
   }
 

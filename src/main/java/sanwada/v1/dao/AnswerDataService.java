@@ -1,3 +1,4 @@
+
 package sanwada.v1.dao;
 
 import java.util.LinkedHashMap;
@@ -11,10 +12,17 @@ import sanwada.v1.entity.Answer;
 import sanwada.v1.entity.DatabaseCollection;
 import sanwada.v1.entity.DbResponse;
 
-public class AnswerDataService {
+public class AnswerDataService{
 
+  /**
+   * Represents a client who interacts with a database
+   */
   @Inject
   DataSourceClient<Document> client;
+
+  /**
+   * Filters to perform with the database query
+   */
   LinkedHashMap<String, Object> filters = new LinkedHashMap<>();
 
   public DbResponse createAnswer(Answer ans) {
@@ -31,9 +39,10 @@ public class AnswerDataService {
       }
 
       Document document = new Document("questionId", ans.getQuestionId())
-              .append("content", ans.getContent());
-      
+          .append("content", ans.getContent());
+
       client.setCollection(DatabaseCollection.ANSWER_COLLECTION);
+
       Long postedTime = System.currentTimeMillis();
       document.append("time", postedTime);
       client.insert(document);
@@ -62,7 +71,9 @@ public class AnswerDataService {
     filters.put("_id", objId);
 
     if (this.client.find(filters).iterator().hasNext()) {
-      Document ansDoc = this.client.find(filters).iterator().next();
+      Document ansDoc = this.client.find(filters)
+          .iterator()
+          .next();
 
       Answer ans = new Answer();
 
@@ -97,7 +108,6 @@ public class AnswerDataService {
   }
 
   public DbResponse deleteAnswer(String id) {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -105,7 +115,7 @@ public class AnswerDataService {
     client.setCollection(DatabaseCollection.QUESTION_COLLECTION);
     ObjectId objId = new ObjectId(id);
     filters.put("_id", objId);
-    
+
     return this.client.find(filters).iterator().hasNext();
   }
 }

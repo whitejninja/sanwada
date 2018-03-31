@@ -2,7 +2,7 @@ package sanwada.v1.entity;
 
 import sanwada.v1.dao.DbOperationStatus;
 
-public class DbResponse {
+public class DbResponse{
 
   private DbOperationStatus status;
   private Object responseObj;
@@ -27,6 +27,5 @@ public class DbResponse {
   public void setNewQuestion(Question question) {
     this.responseObj = question;
   }
-
 
 }

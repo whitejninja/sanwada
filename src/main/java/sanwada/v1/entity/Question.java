@@ -2,14 +2,39 @@ package sanwada.v1.entity;
 
 import org.jvnet.hk2.annotations.Optional;
 
-public class Question {
+/**
+ * Representation of a question that is stored in the database
+ */
+public class Question{
 
+  /**
+   * Unique identity value for the question
+   */
   @Optional
   private String id;
+
+  /**
+   * Unique username of the user who created this question
+   */
   @Optional
   private String userAlias;
+
+  /**
+   * Title of the question.
+   * Can contain unicode characters.
+   */
   private String title;
+
+  /**
+   * Textual content of this question.
+   * Can contain unicode chracters.
+   */
   private String content;
+
+  /**
+   * Timestamp the question is created.
+   * Must be in UTC (Coordinated Universal Time) format.
+   */
   private long timeStamp;
 
   public String getId() {

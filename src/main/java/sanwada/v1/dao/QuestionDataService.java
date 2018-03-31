@@ -11,7 +11,7 @@ import sanwada.v1.entity.DatabaseCollection;
 import sanwada.v1.entity.DbResponse;
 import sanwada.v1.entity.Question;
 
-public class QuestionDataService implements QuestionDAO {
+public class QuestionDataService implements QuestionDAO{
 
   @Inject
   DataSourceClient<Document> client;
@@ -32,11 +32,12 @@ public class QuestionDataService implements QuestionDAO {
       client.setCollection(DatabaseCollection.QUESTION_COLLECTION);
 
       Document document = new Document("alias", question.getUserAlias())
-              .append("title", question.getTitle())
-              .append("content", question.getContent());
+          .append("title", question.getTitle())
+          .append("content", question.getContent());
 
       this.filters.clear();
       this.filters.put("title", question.getTitle());
+
       // check duplicate title
       Boolean titleAvailable = !this.client.find(this.filters).iterator().hasNext();
 
@@ -110,7 +111,9 @@ public class QuestionDataService implements QuestionDAO {
 
       this.filters.clear();
       this.filters.put("title", title);
-      Document doc = this.client.find(this.filters).iterator().next();
+      Document doc = this.client.find(this.filters)
+          .iterator()
+          .next();
 
       Question returnedQuestion = new Question();
       Object idObj = doc.get("_id");
@@ -141,13 +144,16 @@ public class QuestionDataService implements QuestionDAO {
       client.setCollection(DatabaseCollection.QUESTION_COLLECTION);
 
       Document newDocument = new Document("title", question.getTitle()).append("content",
-              question.getContent());
+          question.getContent());
 
       this.filters.clear();
       this.filters.put("_id", objectId);
       this.client.update(this.filters, newDocument);
 
-      Document updatedDocument = this.client.find(this.filters).iterator().next();
+      Document updatedDocument = this.client.find(this.filters)
+          .iterator()
+          .next();
+
       Question updatedQuestion = question;
       updatedQuestion.setId(id);
       updatedQuestion.setUserAlias(updatedDocument.getString("alias"));
@@ -179,26 +185,18 @@ public class QuestionDataService implements QuestionDAO {
       boolean isSuccess = this.client.delete(filters);
 
       if (isSuccess) {
-
         this.dbResponse = new DbResponse(DbOperationStatus.SUCCESS, id);
-
       } else {
-
         this.dbResponse = new DbResponse(DbOperationStatus.NO_SUCH_RECORD, null);
-
       }
 
     } catch (IllegalArgumentException ex) {
-
       // Invalid request error
       this.dbResponse = new DbResponse(DbOperationStatus.FALIURE, null);
-
     } catch (Exception ex) {
-
       // Invalid request error
       ex.printStackTrace();
       this.dbResponse = new DbResponse(DbOperationStatus.FALIURE, null);
-
     }
 
     return this.dbResponse;

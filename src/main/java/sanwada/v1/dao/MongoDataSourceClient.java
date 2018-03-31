@@ -17,13 +17,20 @@ import com.mongodb.client.MongoCollection;
 
 import sanwada.v1.entity.DatabaseCollection;
 
-public class MongoDataSourceClient implements DataSourceClient<Document> {
+/**
+ * MongoDB specific client implementation of DataSourceClient interface
+ */
+public class MongoDataSourceClient implements DataSourceClient<Document>{
 
-  private String host;
-  private int port;
-  private static MongoClient mClient;
-  private String collection;
+  private String host; // Host of the DB server
+  private int port; // Port of the DB server to connect to
+  private static MongoClient mClient; // Connection object to DB server
+  private String collection; // Represent a table in DB server
 
+  /**
+   * If port is not specified, MonogoDB deafult port will be considered for
+   * connections.
+   */
   public MongoDataSourceClient() {
     this("localhost", 27017);
   }
@@ -31,11 +38,14 @@ public class MongoDataSourceClient implements DataSourceClient<Document> {
   public MongoDataSourceClient(String host, int port) {
     this.host = host;
     this.port = port;
-    this.collection="question_collection";
+    this.collection = "question_collection";
     initializeConnection();
   }
 
-  public void initializeConnection(){
+  /**
+   * Creates a static connection object to connect to a MongoDB server
+   */
+  public void initializeConnection() {
     // Sets options for mongo client object
     MongoClientOptions.Builder clientOptions = new MongoClientOptions.Builder();
 
@@ -62,17 +72,17 @@ public class MongoDataSourceClient implements DataSourceClient<Document> {
   public void setCollection(DatabaseCollection collection) {
     switch (collection) {
       case ANSWER_COLLECTION:
-        this.collection="answer_collection";
+        this.collection = "answer_collection";
         break;
       case QUESTION_COLLECTION:
-        this.collection="question_collection";
+        this.collection = "question_collection";
         break;
     }
   }
-  
+
   public MongoCollection<Document> getCollection() throws NullPointerException {
     return MongoDataSourceClient.getClient().getDatabase("DiscussDatabase")
-            .getCollection(this.collection);
+        .getCollection(this.collection);
   }
 
   @Override
@@ -83,8 +93,9 @@ public class MongoDataSourceClient implements DataSourceClient<Document> {
   protected void finalize() throws Throwable {
   }
 
-  /*
-   * @param filter must be a sub type of org.bson.BSON
+  /**
+   * @param filter
+   *          must be a sub type of org.bson.BSON
    */
   @Override
   public Iterable<Document> find(LinkedHashMap<String, Object> filters) {
@@ -98,12 +109,12 @@ public class MongoDataSourceClient implements DataSourceClient<Document> {
 
     Bson bsonFilter = (Bson) query;
     FindIterable<Document> docs = getCollection().find(bsonFilter);
-    // return (Iterator<Object>) docs;
     return docs;
   }
 
-  /*
-   * @param object must be a type Document
+  /**
+   * @param object
+   *          must be a type Document
    */
   @Override
   public void insert(Object object) {
