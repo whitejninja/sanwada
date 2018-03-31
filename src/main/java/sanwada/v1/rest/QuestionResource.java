@@ -13,6 +13,8 @@ import javax.ws.rs.core.Response;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ApiResponse;
 import sanwada.v1.dao.DbOperationStatus;
 import sanwada.v1.entity.DbResponse;
 import sanwada.v1.dao.QuestionDataService;
@@ -24,9 +26,14 @@ public class QuestionResource {
 
 	@POST
 	@Path(value = "create")
-	@ApiOperation(value="Creates a question")
 	@Consumes(value = MediaType.APPLICATION_JSON)
 	@Produces(value = MediaType.APPLICATION_JSON)
+	@ApiOperation(value="Creates a question")
+	@ApiResponses(value = { 
+		      @ApiResponse(code = 201, message = "Question created", response=Question.class),
+		      @ApiResponse(code = 409, message = "Title already exist"),
+		      @ApiResponse(code = 500, message = "Internal server error") 
+		      })
 	public Response createQuestion(Question question) {
 		QuestionDataService questionDataService = new QuestionDataService();
 		DbResponse dbResponse = questionDataService.addQuestion(question);
@@ -54,6 +61,12 @@ public class QuestionResource {
 	@Path(value = "update/{id}")
 	@Consumes(value = MediaType.APPLICATION_JSON)
 	@Produces(value = MediaType.APPLICATION_JSON)
+	@ApiOperation(value="Updates a question")
+	@ApiResponses(value = { 
+		      @ApiResponse(code = 200, message = "Question updated", response=Question.class),
+		      @ApiResponse(code = 400, message = "ID doesn't exist"),
+		      @ApiResponse(code = 500, message = "Internal server error") 
+		      })
 	public Response updateQuestion(@PathParam("id") String id, Question question) {
 		QuestionDataService questionDataService = new QuestionDataService();
 		DbResponse dbResponse = questionDataService.updateQuestion(id, question);
@@ -82,6 +95,12 @@ public class QuestionResource {
 	@Path(value = "/{id}")
 	@Consumes(value = MediaType.APPLICATION_JSON)
 	@Produces(value = MediaType.APPLICATION_JSON)
+	@ApiOperation(value="Retrieve a question")
+	@ApiResponses(value = { 
+		      @ApiResponse(code = 200, message = "Retrieving question successful", response=Question.class),
+		      @ApiResponse(code = 400, message = "ID doesn't exist"),
+		      @ApiResponse(code = 500, message = "Internal server error") 
+		      })
 	public Response getQuestion(@PathParam("id") String id) {
 		QuestionDataService questionDataService = new QuestionDataService();
 		DbResponse dbResponse = questionDataService.getQuestion(id);
@@ -103,6 +122,12 @@ public class QuestionResource {
 	
 	@DELETE
 	@Path(value = "/{id}")
+	@ApiOperation(value="Delete a question")
+	@ApiResponses(value = { 
+		      @ApiResponse(code = 200, message = "Deleting question successful", response=String.class),
+		      @ApiResponse(code = 400, message = "ID doesn't exist"),
+		      @ApiResponse(code = 500, message = "Internal server error") 
+		      })
 	public Response deleteQuestion(@PathParam("id") String id) {
 		QuestionDataService questionDataService = new QuestionDataService();
 		DbResponse dbResponse = questionDataService.removeQuestion(id);
