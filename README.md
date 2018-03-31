@@ -30,5 +30,5 @@ deploy sanawada.war
     $ $GLASSFISH_INSTALL_DIR/bin/asadmin deploy build/libs/sanwada.war
 
 #### Contributing
-If you intend to contribute to **Sanwada** please make a [pull request](https://github.com/whitejninja/sanwada/pulls). We would like to inform you that as a convention we follow [Java style guide](https://google.github.io/styleguide/javaguide.html) published by Google.
+If you intend to contribute to **Sanwada** please make a [pull request](https://github.com/whitejninja/sanwada/pulls). We would like to inform you that as a convention we follow [Java style guide](https://google.github.io/styleguide/javaguide.html) published by Google. If you use eclipse as your IDE goto `windows -> preferences -> Java -> formatter` and import `eclipse-java-formatter.xml` at the project root which follows Google's code style.
 
