@@ -30,15 +30,18 @@ Once **Sanwada** is deployed swagger documentation can be accessible at `http://
 
 Configuration is handled by `src/main/resources/META-INF/microprofile-config.properties` file. Internally this configuration is processed via eclipse-microprofile API.
 
-Configuration values supported
-* config_ordinal (Integer value to compare with rest of the confiuration files. File with the highest number takes precedense when configration is evalutated)
+Configuration values supported are in the following table
 
-* datasource.host (String hostname name or IP address of the database server)
-
-* datasource.port (Integer value of the port number, database server is listening on incoming connections)
+| Property        | Value           | Example  |
+|-----------------|-----------------|----------|
+| config_ordinal  | Integer value to compare with rest of the confiuration files. File with the highest number takes precedense when configration is evalutated | 5999 | 
+| datasource.host | String hostname name or IP address of the database server | localhost |
+| datasource.port | Integer value of the port number, database server is listening on incoming connections | 27019 |
 
 
 ## Design 
+
+![sequence_diagram](https://github.com/whitejninja/sanwada/blob/master/doc/sequence_diagram_v1.png "Sequence Diagram")
 
 **Sanwada** serves it's user's forum requests via a REST API.
 REST API currentlly has 2 endpoints/resources.
@@ -52,8 +55,7 @@ The requests recieved from the **Foo**Resource object (Foo can be any REST resou
 
 **Bar**DataSourceClient is responsible for connecting to **Bar** database and executing the requested database queries. **Bar** can be MySql, MongoDB, MsSql or any other database type. **Bar** can be relational or nosql type database as database query preparation is done by the **Foo**DataService object. Currently only MongoDB supported is implemented as a datasource client.
 
-The following sequence diagram abstracts the above mentioned interaction for GET request.
+The above sequence diagram abstracts the above mentioned interaction for GET request.
 
 
-![sequence_diagram](https://github.com/whitejninja/sanwada/blob/master/doc/sequence_diagram_v1.png "Sequence Diagram")
 
